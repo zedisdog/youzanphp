@@ -11,10 +11,13 @@
     ],
     "require": {
         "guzzlehttp/guzzle": "^6.3",
-        "monolog/monolog": "^1.24"
+        "monolog/monolog": "^1.24",
+        "pragmarx/ia-arr": "^5.8",
+        "php": "^7.3",
+        "nesbot/carbon": "^2.17",
+        "jawira/case-converter": "^2.0"
     },
     "require-dev": {
-        "php": ">=7.2.0",
         "phpunit/phpunit": "^8.1"
     },
     "autoload": {
