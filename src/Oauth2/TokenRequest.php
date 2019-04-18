@@ -7,7 +7,9 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Oauth2;
 
 
-class TokenRequest
+use Dezsidog\Youzanphp\Contract\Request;
+
+class TokenRequest implements Request
 {
     public $client_id;
     public $client_secret;
@@ -15,6 +17,13 @@ class TokenRequest
     public $redirect_uri;
     public $authorize_type = 'authorization_code';
 
+    /**
+     * TokenRequest constructor.
+     * @param string $clientId
+     * @param string $clientSecret
+     * @param string $code
+     * @param string $redirectUri
+     */
     public function __construct(string $clientId, string $clientSecret, string $code, string $redirectUri)
     {
         $this->client_id = $clientId;
