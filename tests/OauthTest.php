@@ -5,10 +5,10 @@
 
 class OauthTest extends \PHPUnit\Framework\TestCase
 {
-    protected $clientId = "be9a06911147e350b0";
-    protected $clientSecret = "dfee7097a9b77c394c2439c838e95ef8";
-    protected $code = "874b4877cc7bca92cf15291b1a9f11d4";
-    protected $redirectUri = "http://devbbdapi.ffuture.cn/api/yz/newcallback";
+    protected $clientId = "";
+    protected $clientSecret = "";
+    protected $code = "";
+    protected $redirectUri = "";
 
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
