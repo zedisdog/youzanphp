@@ -12,6 +12,7 @@ use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\Trade;
 use Dezsidog\Youzanphp\Api\Params\IncreasePointParams;
 use Dezsidog\Youzanphp\Api\Params\SalesmanAccountParams;
+use Dezsidog\Youzanphp\Api\Params\SalesmanByTradeId;
 use Dezsidog\Youzanphp\Api\Params\TradeParams;
 use Dezsidog\Youzanphp\BaseClient;
 use Dezsidog\Youzanphp\Contract\Params;
@@ -71,13 +72,28 @@ class Client extends BaseClient
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function salesmanAccount(int $fansType, int $fansId, string $mobile, string $version = '3.0.1')
+    public function salesmanAccount(int $fansType, int $fansId, string $mobile, string $version = '3.0.1'): SalesmanAccount
     {
         $method = 'youzan.salesman.account.get';
         $url = $this->buildUrl($method, $version);
         $request = $this->makeRequest($url, new SalesmanAccountParams($fansType, $fansId, $mobile));
         $response = $this->request($request);
         return $response ? new SalesmanAccount($response) : null;
+    }
+
+    /**
+     * @param string $tradeId
+     * @param string $version
+     * @return string|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function salesmanByTradeId(string $tradeId, string $version = '3.0.0'): ?string
+    {
+        $method = 'youzan.salesman.trades.account.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new SalesmanByTradeId($tradeId));
+        $response = $this->request($request);
+        return $response ? $response['mobile'] : null;
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {
