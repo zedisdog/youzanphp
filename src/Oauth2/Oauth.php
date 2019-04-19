@@ -7,34 +7,23 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Oauth2;
 
 
-use Dezsidog\Youzanphp\Contract\Request;
-use Dezsidog\Youzanphp\Exceptions\BadRequestException;
-use Dezsidog\Youzanphp\Exceptions\ResponseEmptyException;
-use GuzzleHttp\Client;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
+use Dezsidog\Youzanphp\BaseClient;
+use Dezsidog\Youzanphp\Contract\Params;
+use GuzzleHttp\Psr7\Request;
+use function GuzzleHttp\Psr7\stream_for;
 
-class Oauth
+class Oauth extends BaseClient
 {
     const URL = 'https://open.youzanyun.com/auth/token';
 
     protected $clientId;
     protected $clientSecret;
-    protected $client;
-    protected $logger;
 
     public function __construct(string $clientId, string $clientSecret)
     {
+        parent::__construct();
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->client = new Client([
-            'base_uri' => self::URL,
-            'headers' => [
-                'Content-Type' => 'application/json'
-            ]
-        ]);
-        $this->logger = new Logger('oauth');
-        $this->logger->pushHandler(new StreamHandler('php://stderr'));
     }
 
     /**
@@ -45,8 +34,10 @@ class Oauth
      */
     public function requestToken(string $code, string $redirectUri): Token
     {
-        $request = new TokenRequest($this->clientId, $this->clientSecret, $code, $redirectUri);
-        return new Token($this->request($request));
+        $params = new TokenParams($this->clientId, $this->clientSecret, $code, $redirectUri);
+        $request = $this->makeRequest(self::URL, $params);
+        $response = $this->request($request);
+        return new Token($response);
     }
 
     /**
@@ -56,32 +47,13 @@ class Oauth
      */
     public function refreshToken(string $refreshToken): Token
     {
-        $request = new RefreshTokenRequest($this->clientId, $this->clientSecret, $refreshToken);
-        return new Token($this->request($request));
+        $params = new RefreshTokenParams($this->clientId, $this->clientSecret, $refreshToken);
+        $request = $this->makeRequest(self::URL, $params);
+        $response = $this->request($request);
+        return new Token($response);
     }
 
-    /**
-     * @param Request $request
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    protected function request(Request $request): array
-    {
-        $this->logger->info("+request oauth" . $request);
-        $response = $this->client->request('POST', '', [
-            'json' => $request,
-        ]);
-
-        $body = $response->getBody();
-        $this->logger->info("-response " . $body);
-        $data = \GuzzleHttp\json_decode($body, true);
-        if (empty($data)) {
-            throw new ResponseEmptyException("response is empty");
-        }
-        if ($data['code'] != 200 || $data['success'] != true) {
-            throw new BadRequestException($data['success'], $data['code'], $data['message']);
-        }
-
-        return $data['data'];
+    protected function makeRequest(string $url, ?Params $params = null, string $method = 'POST'): Request {
+        return new Request($method, $url, [], stream_for($params));
     }
 }

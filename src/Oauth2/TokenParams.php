@@ -7,9 +7,9 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Oauth2;
 
 
-use Dezsidog\Youzanphp\Contract\Request;
+use Dezsidog\Youzanphp\Contract\Params;
 
-class TokenRequest implements Request
+class TokenParams implements Params
 {
     public $client_id;
     public $client_secret;

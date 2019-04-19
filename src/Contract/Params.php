@@ -6,7 +6,7 @@
 namespace Dezsidog\Youzanphp\Contract;
 
 
-interface Request
+interface Params
 {
     public function __toString();
 }

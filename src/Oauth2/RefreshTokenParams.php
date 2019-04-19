@@ -7,9 +7,9 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Oauth2;
 
 
-use Dezsidog\Youzanphp\Contract\Request;
+use Dezsidog\Youzanphp\Contract\Params;
 
-class RefreshTokenRequest implements Request
+class RefreshTokenParams implements Params
 {
     public $authorize_type = "refresh_token";
     public $refresh_token;
