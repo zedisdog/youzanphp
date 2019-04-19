@@ -10,10 +10,8 @@ namespace Dezsidog\Youzanphp\Client;
 use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
 use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\Trade;
-use Dezsidog\Youzanphp\Api\Params\IncreasePointParams;
-use Dezsidog\Youzanphp\Api\Params\SalesmanAccountParams;
+use Dezsidog\Youzanphp\Api\Params\IncreasePoint;
 use Dezsidog\Youzanphp\Api\Params\SalesmanByTradeId;
-use Dezsidog\Youzanphp\Api\Params\TradeParams;
 use Dezsidog\Youzanphp\BaseClient;
 use Dezsidog\Youzanphp\Contract\Params;
 use GuzzleHttp\Psr7\Request;
@@ -40,7 +38,7 @@ class Client extends BaseClient
     {
         $method = 'youzan.trade.get';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, new TradeParams($tid));
+        $request = $this->makeRequest($url, new \Dezsidog\Youzanphp\Api\Params\Trade($tid));
         $response = $this->request($request);
         return $response ? new Trade($response) : null;
     }
@@ -51,6 +49,7 @@ class Client extends BaseClient
      * @param int $points 积分值
      * @param string $reason 积分变动原因
      * @param string $biz_value 用于幂等支持（幂等时效三个月, 超过三个月的相同值调用不保证幂等）
+     * @param string $version
      * @return Simple|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -58,7 +57,7 @@ class Client extends BaseClient
     {
         $method = 'youzan.crm.customer.points.increase';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, new IncreasePointParams($accountId, $accountType, $points, $reason, $biz_value));
+        $request = $this->makeRequest($url, new IncreasePoint($accountId, $accountType, $points, $reason, $biz_value));
         $response = $this->request($request);
         return $response ? new Simple($response) : null;
     }
@@ -76,7 +75,7 @@ class Client extends BaseClient
     {
         $method = 'youzan.salesman.account.get';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, new SalesmanAccountParams($fansType, $fansId, $mobile));
+        $request = $this->makeRequest($url, new \Dezsidog\Youzanphp\Api\Params\SalesmanAccount($fansType, $fansId, $mobile));
         $response = $this->request($request);
         return $response ? new SalesmanAccount($response) : null;
     }

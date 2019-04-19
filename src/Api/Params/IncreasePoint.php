@@ -8,7 +8,7 @@ namespace Dezsidog\Youzanphp\Api\Params;
 
 use Dezsidog\Youzanphp\Contract\Params;
 
-class IncreasePointParams implements Params
+class IncreasePoint implements Params
 {
     /**
      * @var string

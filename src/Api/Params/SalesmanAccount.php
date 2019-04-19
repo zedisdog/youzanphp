@@ -8,7 +8,7 @@ namespace Dezsidog\Youzanphp\Api\Params;
 
 use Dezsidog\Youzanphp\Contract\Params;
 
-class SalesmanAccountParams implements Params
+class SalesmanAccount implements Params
 {
     /**
      * @var int
