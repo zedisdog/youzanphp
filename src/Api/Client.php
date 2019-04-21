@@ -17,7 +17,7 @@ use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\Trade;
 use Dezsidog\Youzanphp\Api\Params\AddTag;
 use Dezsidog\Youzanphp\Api\Params\IncreasePoint;
-use Dezsidog\Youzanphp\Api\Params\ItemsOnsale;
+use Dezsidog\Youzanphp\Api\Params\Items;
 use Dezsidog\Youzanphp\Api\Params\SalesmanByTradeId;
 use Dezsidog\Youzanphp\BaseClient;
 use Dezsidog\Youzanphp\Contract\Params;
@@ -157,6 +157,7 @@ class Client extends BaseClient
     }
 
     /**
+     * 获取商品类目列表
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -180,6 +181,7 @@ class Client extends BaseClient
     }
 
     /**
+     * 获取在销售的商品
      * @param int $pageSize
      * @param int $pageNo
      * @param string $q
@@ -204,14 +206,117 @@ class Client extends BaseClient
     ) {
         $method = 'youzan.items.onsale.get';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, new ItemsOnsale(
+        $request = $this->makeRequest($url, new Items(
             $pageSize,
             $pageNo,
+            '',
+            '',
+            null,
             $q,
             $tagId,
+            '',
             $updateTimeStart,
             $updateTimeEnd,
             $orderBy
+        ));
+        $response = $this->request($request);
+        if ($response) {
+            $products = [];
+            foreach ($response['items'] as $item) {
+                array_push($products, new ListedProduct($item));
+            }
+            return [$products, $response['count']];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取仓库中的商品
+     * @param int $pageSize
+     * @param int $pageNo
+     * @param string $banner
+     * @param string $q
+     * @param int $tagId
+     * @param Carbon|null $updateTimeStart
+     * @param Carbon|null $updateTimeEnd
+     * @param string $orderBy
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getInventoryItems(
+        int $pageSize = 40,
+        int $pageNo = 1,
+        string $banner = '',
+        string $q = '',
+        int $tagId = 0,
+        ?Carbon $updateTimeStart = null,
+        ?Carbon $updateTimeEnd = null,
+        string $orderBy = 'created_time:desc',
+        string $version = '3.0.0'
+    ) {
+        $method = 'youzan.items.inventory.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new Items(
+            $pageSize,
+            $pageNo,
+            '',
+            $banner,
+            null,
+            $q,
+            $tagId,
+            '',
+            $updateTimeStart,
+            $updateTimeEnd,
+            $orderBy
+        ));
+        $response = $this->request($request);
+        if ($response) {
+            $products = [];
+            foreach ($response['items'] as $item) {
+                array_push($products, new ListedProduct($item));
+            }
+            return [$products, $response['count']];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取所有商品，包括上架的和仓库中的
+     * @param int $pageSize
+     * @param int $pageNo
+     * @param string $itemIds
+     * @param int $showSoldOut
+     * @param string $q
+     * @param string $tagIds
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getProducts(
+        int $pageSize = 40,
+        int $pageNo = 1,
+        string $itemIds = '',
+        int $showSoldOut = 2,
+        string $q = '',
+        string $tagIds = '',
+        string $version = '3.0.0'
+    ) {
+        $method = 'youzan.item.search';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new Items(
+            $pageSize,
+            $pageNo,
+            $itemIds,
+            '',
+            $showSoldOut,
+            $q,
+            0,
+            $tagIds
         ));
         $response = $this->request($request);
         if ($response) {
