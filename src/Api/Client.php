@@ -13,6 +13,7 @@ use Dezsidog\Youzanphp\Api\Models\ListedProduct;
 use Dezsidog\Youzanphp\Api\Models\OpenId;
 use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
 use Dezsidog\Youzanphp\Api\Models\Shop;
+use Dezsidog\Youzanphp\Api\Models\ShopBasic;
 use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\Trade;
 use Dezsidog\Youzanphp\Api\Params\AddTag;
@@ -35,13 +36,14 @@ class Client extends BaseClient
     }
 
     /**
+     * 获取交易信息
      * @param string $tid
      * @param string $version
      * @return Trade|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function trade(string $tid, string $version = '4.0.0'): ?Trade
+    public function getTrade(string $tid, string $version = '4.0.0'): ?Trade
     {
         $method = 'youzan.trade.get';
         $url = $this->buildUrl($method, $version);
@@ -203,7 +205,7 @@ class Client extends BaseClient
         ?Carbon $updateTimeEnd = null,
         string $orderBy = 'created_time:desc',
         string $version = '3.0.0'
-    ) {
+    ): array {
         $method = 'youzan.items.onsale.get';
         $url = $this->buildUrl($method, $version);
         $request = $this->makeRequest($url, new Items(
@@ -256,7 +258,7 @@ class Client extends BaseClient
         ?Carbon $updateTimeEnd = null,
         string $orderBy = 'created_time:desc',
         string $version = '3.0.0'
-    ) {
+    ): ?array {
         $method = 'youzan.items.inventory.get';
         $url = $this->buildUrl($method, $version);
         $request = $this->makeRequest($url, new Items(
@@ -305,7 +307,7 @@ class Client extends BaseClient
         string $q = '',
         string $tagIds = '',
         string $version = '3.0.0'
-    ) {
+    ): ?array {
         $method = 'youzan.item.search';
         $url = $this->buildUrl($method, $version);
         $request = $this->makeRequest($url, new Items(
@@ -328,6 +330,22 @@ class Client extends BaseClient
         } else {
             return null;
         }
+    }
+
+    /**
+     * 获取店铺基础信息
+     * @param string $version
+     * @return ShopBasic|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getShopBaseInfo(string $version = '3.0.0'): ?ShopBasic
+    {
+        $method = 'youzan.shop.basic.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url);
+        $response = $this->request($request);
+        return $response ? new ShopBasic($response) : null;
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {
