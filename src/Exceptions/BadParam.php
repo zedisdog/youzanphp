@@ -6,6 +6,6 @@
 namespace Dezsidog\Youzanphp\Exceptions;
 
 
-class BadTagParam extends \RuntimeException
+class BadParam extends \RuntimeException
 {
 }

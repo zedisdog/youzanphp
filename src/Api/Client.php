@@ -9,6 +9,7 @@ namespace Dezsidog\Youzanphp\Client;
 
 use Carbon\Carbon;
 use Dezsidog\Youzanphp\Api\Models\Category;
+use Dezsidog\Youzanphp\Api\Models\GivePresent;
 use Dezsidog\Youzanphp\Api\Models\ListedProduct;
 use Dezsidog\Youzanphp\Api\Models\OpenId;
 use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
@@ -346,6 +347,25 @@ class Client extends BaseClient
         $request = $this->makeRequest($url);
         $response = $this->request($request);
         return $response ? new ShopBasic($response) : null;
+    }
+
+    /**
+     * 向用户发送赠品
+     * @param int $activityId
+     * @param int $fansId
+     * @param int $buyerId
+     * @param string $version
+     * @return GivePresent|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function givePresent(int $activityId, int $fansId, int $buyerId = 0, string $version = '3.0.0'): ?GivePresent
+    {
+        $method = 'youzan.ump.present.give';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new \Dezsidog\Youzanphp\Api\Params\GivePresent($activityId, $fansId, $buyerId));
+        $response = $this->request($request);
+        return $response ? new GivePresent($response) : null;
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {

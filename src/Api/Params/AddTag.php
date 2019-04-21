@@ -6,7 +6,7 @@
 declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Params;
 
-use Dezsidog\Youzanphp\Exceptions\BadTagParam;
+use Dezsidog\Youzanphp\Exceptions\BadParam;
 
 class AddTag extends BaseParams
 {
@@ -29,7 +29,7 @@ class AddTag extends BaseParams
         $this->account_type = $accountType;
         foreach ($tags as $tag) {
             if (!($tag instanceof Tag)) {
-                throw new BadTagParam('tags should be an array of Dezsidog\Youzanphp\Api\Params\Tag');
+                throw new BadParam('tags should be an array of Dezsidog\Youzanphp\Api\Params\Tag');
             }
         }
         $this->tags = $tags;
