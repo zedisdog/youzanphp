@@ -5,10 +5,7 @@
 
 namespace Dezsidog\Youzanphp\Api\Params;
 
-
-use Dezsidog\Youzanphp\Contract\Params;
-
-class SalesmanAccount implements Params
+class SalesmanAccount extends BaseParams
 {
     /**
      * @var int
@@ -28,13 +25,5 @@ class SalesmanAccount implements Params
         $this->fans_type = $fansType;
         $this->fans_id = $fansId;
         $this->mobile = $mobile;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return \GuzzleHttp\json_encode($this);
     }
 }

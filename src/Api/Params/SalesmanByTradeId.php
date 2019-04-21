@@ -5,10 +5,7 @@
 
 namespace Dezsidog\Youzanphp\Api\Params;
 
-
-use Dezsidog\Youzanphp\Contract\Params;
-
-class SalesmanByTradeId implements Params
+class SalesmanByTradeId extends BaseParams
 {
     /**
      * @var string
@@ -18,13 +15,5 @@ class SalesmanByTradeId implements Params
     public function __construct(string $tradeId)
     {
         $this->order_no = $tradeId;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        return \GuzzleHttp\json_encode($this);
     }
 }

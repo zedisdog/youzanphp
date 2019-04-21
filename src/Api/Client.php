@@ -10,6 +10,7 @@ namespace Dezsidog\Youzanphp\Client;
 use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
 use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\Trade;
+use Dezsidog\Youzanphp\Api\Params\AddTag;
 use Dezsidog\Youzanphp\Api\Params\IncreasePoint;
 use Dezsidog\Youzanphp\Api\Params\SalesmanByTradeId;
 use Dezsidog\Youzanphp\BaseClient;
@@ -93,6 +94,23 @@ class Client extends BaseClient
         $request = $this->makeRequest($url, new SalesmanByTradeId($tradeId));
         $response = $this->request($request);
         return $response ? $response['mobile'] : null;
+    }
+
+    /**
+     * @param string $accountType
+     * @param string $accountId
+     * @param array $tags
+     * @param string $version
+     * @return bool|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function addTags(string $accountType, string $accountId, array $tags, string $version = '4.0.0'): ?bool
+    {
+        $method = 'youzan.scrm.tag.relation.add';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new AddTag($accountType, $accountId, $tags));
+        $response = $this->request($request);
+        return is_bool($response) ? $response : null;
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {

@@ -47,10 +47,10 @@ abstract class BaseClient
 
     /**
      * @param \GuzzleHttp\Psr7\Request $request
-     * @return array
+     * @return array|bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    protected function request(Request $request): ?array
+    protected function request(Request $request)
     {
         $this->logger->info(sprintf("+request oauth url: %s body: %s", $request->getUri(), $request->getBody()));
 

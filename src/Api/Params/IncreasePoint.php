@@ -5,10 +5,7 @@
 
 namespace Dezsidog\Youzanphp\Api\Params;
 
-
-use Dezsidog\Youzanphp\Contract\Params;
-
-class IncreasePoint implements Params
+class IncreasePoint extends BaseParams
 {
     /**
      * @var string
@@ -38,10 +35,5 @@ class IncreasePoint implements Params
         $this->points = $points;
         $this->reason = $reason;
         $this->biz_value = $bizValue;
-    }
-
-    public function __toString(): string
-    {
-        return \GuzzleHttp\json_encode($this);
     }
 }
