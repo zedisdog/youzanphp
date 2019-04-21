@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Client;
 
 
+use Dezsidog\Youzanphp\Api\Models\Category;
 use Dezsidog\Youzanphp\Api\Models\OpenId;
 use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
 use Dezsidog\Youzanphp\Api\Models\Shop;
@@ -55,6 +56,7 @@ class Client extends BaseClient
      * @param string $version
      * @return Simple|null
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
      */
     public function increasePoint(string $accountId, int $accountType, int $points, string $reason, string $biz_value = '', string $version = '3.1.0'): ?Simple
     {
@@ -124,6 +126,7 @@ class Client extends BaseClient
      * @param string $version
      * @return OpenId|null
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
      */
     public function getOpenIdByPhone(string $phone, string $countryCode = '86', string $version = '3.0.0'): ?OpenId
     {
@@ -139,6 +142,7 @@ class Client extends BaseClient
      * @param string $version
      * @return Shop|null
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
      */
     public function getShopInfo($version = '3.0.0')
     {
@@ -147,6 +151,21 @@ class Client extends BaseClient
         $request = $this->makeRequest($url);
         $response = $this->request($request);
         return $response ? new Shop($response) : null;
+    }
+
+    /**
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getItemCategories(string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.itemcategories.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url);
+        $response = $this->request($request);
+        return $response ? [new Category($response['categories']), $response['code']] : null;
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {
