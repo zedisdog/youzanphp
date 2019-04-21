@@ -107,25 +107,8 @@ class OrderInfo extends BaseModel
         'success_time'
     ];
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     * @throws \Exception
-     */
-    protected function parse() {
-        foreach ($this->raw as $key => $value) {
-            $convert = new Convert($key);
-            $propName = $convert->toCamel();
-            if (in_array($key, ['order_tags', 'order_extra'])) {
-                $className = $convert->toPascal();
-                if (class_exists($className) && property_exists(self::class, $propName)) {
-                    $this->$propName = new $className($value);
-                }
-                continue;
-            }
-            if (in_array($key, $this->dates)) {
-                $value = new Carbon($value);
-            }
-            $this->$propName = $value;
-        }
-    }
+    protected $objects = [
+        'order_tags' => OrderTags::class,
+        'order_extra' => OrderExtra::class
+    ];
 }

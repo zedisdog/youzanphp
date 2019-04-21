@@ -57,20 +57,9 @@ class AddressInfo extends BaseModel
      */
     public $deliveryEndTime;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     * @throws \Exception
-     */
-    protected function parse()
-    {
-        foreach ($this->raw as $key => $value) {
-            $convert = new Convert($key);
-            $propName = $convert->toCamel();
-            if (in_array($key, ['delivery_start_time', 'delivery_end_time'])) {
-                $value = new Carbon($value);
-            }
-            $this->$propName = $value;
-        }
-    }
+    protected $dates = [
+        'delivery_start_time',
+        'delivery_end_time'
+    ];
 
 }

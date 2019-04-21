@@ -30,29 +30,20 @@ class OrderPromotion extends BaseModel
      */
     public $orders;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        if (isset($this->raw['item_discount_fee'])) {
-            $this->itemDiscountFee = intval($this->raw['item_discount_fee'] * 100);
-        }
-        if (isset($this->raw['order_discount_fee'])) {
-            $this->orderDiscountFee = intval($this->raw['order_discount_fee'] * 100);
-        }
-        $this->adjustFee = intval($this->raw['adjust_fee'] * 100);
-        if(isset($this->raw['item'])){
-            $this->items = [];
-            foreach ((array)$this->raw['item'] as $item) {
-                array_push($this->items, new OrderPromotionItem($item));
-            }
-        }
-        if (isset($this->raw['order'])){
-            $this->orders = [];
-            foreach ((array)$this->raw['order'] as $item) {
-                array_push($this->orders, new OrderPromotionOrder($item));
-            }
-        }
-    }
+    protected $prices = [
+        'item_discount_fee',
+        'order_discount_fee',
+        'adjust_fee',
+    ];
+
+    protected $lists = [
+        'item' => [
+            'propName' => 'items',
+            'class' => OrderPromotionItem::class
+        ],
+        'order' => [
+            'propName' => 'orders',
+            'class' => OrderPromotionOrder::class
+        ],
+    ];
 }

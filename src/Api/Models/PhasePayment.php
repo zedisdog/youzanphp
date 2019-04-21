@@ -36,16 +36,11 @@ class PhasePayment extends BaseModel
      */
     public $innerTransactionNo;
 
-    /**
-     * @throws \Exception
-     */
-    protected function parse() {
-        $this->phase = $this->raw['phase'];
-        $this->payStartTime = new Carbon($this->raw['pay_start_time']);
-        $this->payEndTime = new Carbon($this->raw['pay_end_time']);
-        $this->realPrice = intval($this->raw['real_price'] * 100);
-        $this->outerTransactionNo = $this->raw['outer_transaction_no'];
-        $this->innerTransactionNo = $this->raw['inner_transaction_no'];
-    }
-
+    protected $dates = [
+        'pay_start_time',
+        'pay_end_time'
+    ];
+    protected $prices = [
+        'real_price'
+    ];
 }

@@ -30,14 +30,7 @@ class DeliveryOrder extends BaseModel
      */
     public $dists;
 
-    protected function parse() {
-        $this->pkId = $this->raw['pk_id'];
-        $this->expressState = $this->raw['express_state'];
-        $this->expressType = $this->raw['express_type'];
-        $this->oids = $this->raw['oids'];
-        $this->dists = [];
-        foreach ($this->raw['dists'] as $item) {
-            array_push($this->dists, new Dist($item));
-        }
-    }
+    protected $lists = [
+        'dists' => Dist::class
+    ];
 }

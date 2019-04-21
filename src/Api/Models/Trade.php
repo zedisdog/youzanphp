@@ -49,36 +49,36 @@ class Trade extends BaseModel
     /**
      * @var RefundOrder[]
      */
-    public $refundOrder;
+    public $refundOrders;
     /**
      * @var DeliveryOrder[]
      */
-    public $deliveryOrder;
+    public $deliveryOrders;
     /**
      * @var OrderPromotion
      */
     public $orderPromotion;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse() {
-        $this->fullOrderInfo = new FullOrderInfo($this->raw['full_order_info']);
-        $this->refundOrder = [];
-        foreach ($this->raw['refund_order'] as $item) {
-            array_push($this->refundOrder, new RefundOrder($item));
-        }
-        if (isset($this->raw['delivery_order'])) {
-            $this->deliveryOrder = [];
-            foreach ($this->raw['delivery_order'] as $item) {
-                array_push($this->deliveryOrder, new DeliveryOrder($item));
-            }
-        }
-        $this->orderPromotion = new OrderPromotion($this->raw['order_promotion']);
-    }
+    protected $objects = [
+        'full_order_info' => FullOrderInfo::class,
+        'order_promotion' => OrderPromotion::class
+    ];
 
-    protected function parseTid()
+    protected $lists = [
+        'refund_order' => [
+            'propName' => 'refundOrders',
+            'class' => RefundOrder::class
+        ],
+        'delivery_order' => [
+            'propName' => 'deliveryOrders',
+            'class' => DeliveryOrder::class
+        ],
+    ];
+
+    public function __construct($raw)
     {
-        $this->tid = Arr::get($this->raw, 'full_order_info.order_info.tid');
+        parent::__construct($raw);
+        $this->tid = $this->fullOrderInfo->orderInfo->tid;
+        $this->orders = $this->fullOrderInfo->orders;
     }
 }

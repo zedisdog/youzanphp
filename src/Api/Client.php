@@ -7,7 +7,9 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Client;
 
 
+use Carbon\Carbon;
 use Dezsidog\Youzanphp\Api\Models\Category;
+use Dezsidog\Youzanphp\Api\Models\ListedProduct;
 use Dezsidog\Youzanphp\Api\Models\OpenId;
 use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
 use Dezsidog\Youzanphp\Api\Models\Shop;
@@ -15,6 +17,7 @@ use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\Trade;
 use Dezsidog\Youzanphp\Api\Params\AddTag;
 use Dezsidog\Youzanphp\Api\Params\IncreasePoint;
+use Dezsidog\Youzanphp\Api\Params\ItemsOnsale;
 use Dezsidog\Youzanphp\Api\Params\SalesmanByTradeId;
 use Dezsidog\Youzanphp\BaseClient;
 use Dezsidog\Youzanphp\Contract\Params;
@@ -165,7 +168,61 @@ class Client extends BaseClient
         $url = $this->buildUrl($method, $version);
         $request = $this->makeRequest($url);
         $response = $this->request($request);
-        return $response ? [new Category($response['categories']), $response['code']] : null;
+        if ($response) {
+            $categories = [];
+            foreach ($response['categories'] as $item) {
+                array_push($categories, new Category($item));
+            }
+            return [$categories, $response['count']];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param int $pageSize
+     * @param int $pageNo
+     * @param string $q
+     * @param int $tagId
+     * @param Carbon|null $updateTimeStart
+     * @param Carbon|null $updateTimeEnd
+     * @param string $orderBy
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getOnSaleItems(
+        int $pageSize = 40,
+        int $pageNo = 1,
+        string $q = '',
+        int $tagId = 0,
+        ?Carbon $updateTimeStart = null,
+        ?Carbon $updateTimeEnd = null,
+        string $orderBy = 'created_time:desc',
+        string $version = '3.0.0'
+    ) {
+        $method = 'youzan.items.onsale.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new ItemsOnsale(
+            $pageSize,
+            $pageNo,
+            $q,
+            $tagId,
+            $updateTimeStart,
+            $updateTimeEnd,
+            $orderBy
+        ));
+        $response = $this->request($request);
+        if ($response) {
+            $products = [];
+            foreach ($response['items'] as $item) {
+                array_push($products, new ListedProduct($item));
+            }
+            return [$products, $response['count']];
+        } else {
+            return null;
+        }
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {

@@ -34,19 +34,7 @@ class PayInfo extends BaseModel
      */
     public $phasePayments;
 
-    /**
-     * @throws \Exception
-     */
-    protected function parse()
-    {
-        $this->totalFee = intval($this->raw['total_fee'] * 100);
-        $this->postFee = intval($this->raw['post_fee'] * 100);
-        $this->payment = intval($this->raw['payment'] * 100);
-        $this->transaction = $this->raw['transaction'];
-        $this->outerTransactions = $this->raw['outer_transactions'];
-        $this->phasePayments = [];
-        foreach ($this->raw['phase_payments'] as $item) {
-            array_push($this->phasePayments, new PhasePayment($item));
-        }
-    }
+    protected $lists = [
+        'phase_payments' => PhasePayment::class
+    ];
 }

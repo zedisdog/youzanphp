@@ -6,9 +6,6 @@
 declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
-
-use Jawira\CaseConverter\Convert;
-
 class ChildOrder extends BaseModel
 {
     /**

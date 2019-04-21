@@ -6,7 +6,6 @@
 declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
-
 class ChildInfo extends BaseModel
 {
     /**
@@ -22,16 +21,7 @@ class ChildInfo extends BaseModel
      */
     public $childOrders;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        $this->giftNo = $this->raw['gift_no'];
-        $this->giftSign = $this->raw['gift_sign'];
-        $this->childOrders = [];
-        foreach ($this->childOrders as $item) {
-            array_push($this->childOrders, new ChildOrder($item));
-        }
-    }
+    protected $lists = [
+        'child_orders' => ChildOrder::class
+    ];
 }

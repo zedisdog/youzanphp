@@ -48,27 +48,17 @@ class FullOrderInfo extends BaseModel
      */
     public $child_info;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        foreach ($this->raw as $key => $value) {
-            if ($key == 'orders') {
-                $this->orders = [];
-                foreach ($value as $item) {
-                    array_push($this->orders, new Order($item));
-                }
-            } else {
-                $convert = new Convert($key);
-                $className = $convert->toPascal();
-                $propName = $convert->toCamel();
-                if (class_exists($className) && property_exists(self::class, $propName)) {
-                    $this->$propName = new $className($value);
-                }
-            }
-        }
-    }
+    protected $lists = [
+        'orders' => Order::class
+    ];
 
-
+    protected $objects = [
+        'order_info' => OrderInfo::class,
+        'source_info' => SourceInfo::class,
+        'buyer_info' => BuyerInfo::class,
+        'pay_info' => PayInfo::class,
+        'remark_info' => RemarkInfo::class,
+        'address_info' => AddressInfo::class,
+        'child_info' => ChildInfo::class
+    ];
 }

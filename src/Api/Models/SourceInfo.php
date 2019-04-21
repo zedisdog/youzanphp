@@ -6,9 +6,6 @@
 declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
-
-use Jawira\CaseConverter\Convert;
-
 class SourceInfo extends BaseModel
 {
     /**
@@ -32,23 +29,7 @@ class SourceInfo extends BaseModel
      */
     public $bizSource;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        foreach ($this->raw as $key => $value) {
-            $convert = new Convert($key);
-            $propName = $convert->toCamel();
-            if ($key == 'source') {
-                $className = $convert->toPascal();
-                if (class_exists($className) && property_exists(self::class, $propName)) {
-                    $this->$propName = new $className($value);
-                }
-            } else {
-                $this->$propName = $value;
-            }
-        }
-    }
-
+    protected $objects = [
+        'source' => Source::class
+    ];
 }

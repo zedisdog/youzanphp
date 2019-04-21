@@ -14,13 +14,17 @@ class Simple extends BaseModel
      */
     public $isSuccess;
 
-    protected function parse()
+    public function __construct($raw)
     {
-        $isSuccess = $this->raw['is_success'];
-        if (is_string($isSuccess)) {
-            $this->isSuccess = $isSuccess == 'true' ? true : false;
-        } else {
-            $this->isSuccess = boolval($isSuccess);
-        }
+        $this->customerConverts = [
+            'is_success' => function($value) {
+                if (is_string($value)) {
+                    return $value == 'true' ? true : false;
+                } else {
+                    return boolval($value);
+                }
+            }
+        ];
+        parent::__construct($raw);
     }
 }

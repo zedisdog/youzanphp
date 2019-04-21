@@ -116,29 +116,30 @@ class OrderExtra extends BaseModel
      */
     public $fxInnerTransactionNo;
 
-    public $beSure = [
-        'is_from_cart',
-        'is_parent_order',
-        'is_sub_order',
-        'is_member',
-    ];
-
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
+    public function __construct($raw)
     {
-        foreach ($this->raw as $key => $value) {
-            $convert = new Convert($key);
-            $propName = $convert->toCamel();
-            if (in_array($key, $this->beSure)) {
-                if(is_string($value)) {
-                    $value = (strtolower($value) == "true" || $value == '1') ? true : false;
-                } else {
-                    $value = boolval($value);
-                }
-            }
-            $this->$propName = $value;
+        $this->customerConverts = [
+            'is_from_cart' => function($value) {
+                return self::beSureBool($value);
+            },
+            'is_parent_order' => function($value) {
+                return self::beSureBool($value);
+            },
+            'is_sub_order' => function($value) {
+                return self::beSureBool($value);
+            },
+            'is_member' => function($value) {
+                return self::beSureBool($value);
+            },
+        ];
+        parent::__construct($raw);
+    }
+
+    protected static function beSureBool($value): bool {
+        if(is_string($value)) {
+            return (strtolower($value) == "true" || $value == '1') ? true : false;
+        } else {
+            return boolval($value);
         }
     }
 }

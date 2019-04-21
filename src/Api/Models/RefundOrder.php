@@ -32,18 +32,7 @@ class RefundOrder extends BaseModel
      */
     public $oids;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        foreach ($this->raw as $key => $value) {
-            $convert = new Convert($key);
-            $propName = $convert->toCamel();
-            if ($key == 'refund_fee') {
-                $value = intval($value * 100);
-            }
-            $this->$propName = $value;
-        }
-    }
+    protected $prices = [
+        'refund_fee'
+    ];
 }

@@ -18,9 +18,7 @@ class Dist extends BaseModel
      */
     public $expressInfo;
 
-    protected function parse()
-    {
-        $this->distId = $this->raw['dist_id'];
-        $this->expressInfo = new ExpressInfo($this->raw['express_info']);
-    }
+    protected $objects = [
+        'express_info' => ExpressInfo::class
+    ];
 }

@@ -52,19 +52,7 @@ class OrderPromotionOrder extends BaseModel
      */
     public $couponId;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        foreach ($this->raw as $key => $value) {
-            $convert = new Convert($key);
-            $propName = $convert->toCamel();
-            if ($key == 'discount_fee') {
-                $value = intval($value * 100);
-            }
-
-            $this->$propName = $value;
-        }
-    }
+    protected $prices = [
+        'discount_fee'
+    ];
 }

@@ -49,19 +49,7 @@ class SalesmanAccount extends BaseModel
      */
     public $level;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     * @throws \Exception
-     */
-    protected function parse()
-    {
-        foreach ($this->raw as $key => $value) {
-            $convert = new Convert($key);
-            $propName = $convert->toCamel();
-            if ($key == 'created_at') {
-                $value = new Carbon($value);
-            }
-            $this->$propName = $value;
-        }
-    }
+    public $dates = [
+        'created_at'
+    ];
 }

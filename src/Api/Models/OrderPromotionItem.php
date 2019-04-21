@@ -30,18 +30,7 @@ class OrderPromotionItem extends BaseModel
      */
     public $promotions;
 
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        $this->isPresent = $this->raw['is_present'];
-        $this->oid = $this->raw['oid'];
-        $this->itemId = $this->raw['item_id'];
-        $this->skuId = $this->raw['sku_id'];
-        $this->promotions = [];
-        foreach ($this->raw['promotions'] as $item) {
-            array_push($this->promotions, new Promotion($item));
-        }
-    }
+    protected $lists = [
+        'promotions' => Promotion::class
+    ];
 }

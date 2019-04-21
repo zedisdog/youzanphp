@@ -132,21 +132,4 @@ class Order extends BaseModel
         'fenxiao_price',
         'fenxiao_payment'
     ];
-
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        foreach ($this->raw as $key => $value) {
-            $convert = new Convert($key);
-            $propName = $convert->toCamel();
-            if (in_array($key, $this->prices)) {
-                $value = intval($value*100);
-            }
-            $this->$propName = $value;
-        }
-    }
-
-
 }
