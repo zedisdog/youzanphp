@@ -9,7 +9,7 @@ namespace Dezsidog\Youzanphp\Api\Models;
 
 use Jawira\CaseConverter\Convert;
 
-class SourceInfo
+class SourceInfo extends BaseModel
 {
     /**
      * @var bool 是否来自线下订单
@@ -31,18 +31,6 @@ class SourceInfo
      * @var string 活动类型：如群团购：”mall_group_buy“
      */
     public $bizSource;
-    public $raw;
-
-    /**
-     * SourceInfo constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

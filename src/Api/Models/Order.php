@@ -9,7 +9,7 @@ namespace Dezsidog\Youzanphp\Api\Models;
 
 use Jawira\CaseConverter\Convert;
 
-class Order
+class Order extends BaseModel
 {
     /**
      * @var string 订单明细id
@@ -124,8 +124,6 @@ class Order
      */
     public $fenxiaoPayment;
 
-    public $raw;
-
     protected $prices = [
         'price',
         'total_fee',
@@ -134,17 +132,6 @@ class Order
         'fenxiao_price',
         'fenxiao_payment'
     ];
-
-    /**
-     * Order constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

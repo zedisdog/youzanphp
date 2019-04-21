@@ -7,7 +7,9 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Client;
 
 
+use Dezsidog\Youzanphp\Api\Models\OpenId;
 use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
+use Dezsidog\Youzanphp\Api\Models\Shop;
 use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\Trade;
 use Dezsidog\Youzanphp\Api\Params\AddTag;
@@ -82,12 +84,13 @@ class Client extends BaseClient
     }
 
     /**
+     * 根据交易号获取分销员手机号
      * @param string $tradeId
      * @param string $version
      * @return string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function salesmanByTradeId(string $tradeId, string $version = '3.0.0'): ?string
+    public function getPhoneByTrade(string $tradeId, string $version = '3.0.0'): ?string
     {
         $method = 'youzan.salesman.trades.account.get';
         $url = $this->buildUrl($method, $version);
@@ -97,6 +100,7 @@ class Client extends BaseClient
     }
 
     /**
+     * 向用户添加tag
      * @param string $accountType
      * @param string $accountId
      * @param array $tags
@@ -111,6 +115,38 @@ class Client extends BaseClient
         $request = $this->makeRequest($url, new AddTag($accountType, $accountId, $tags));
         $response = $this->request($request);
         return is_bool($response) ? $response : null;
+    }
+
+    /**
+     * 根据手机号码获取openId
+     * @param string $phone
+     * @param string $countryCode
+     * @param string $version
+     * @return OpenId|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getOpenIdByPhone(string $phone, string $countryCode = '86', string $version = '3.0.0'): ?OpenId
+    {
+        $method = 'youzan.user.weixin.openid.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new \Dezsidog\Youzanphp\Api\Params\OpenId($phone, $countryCode));
+        $response = $this->request($request);
+        return $response ? new OpenId($response) : null;
+    }
+
+    /**
+     * 获取店铺信息
+     * @param string $version
+     * @return Shop|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getShopInfo($version = '3.0.0')
+    {
+        $method = 'youzan.shop.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url);
+        $response = $this->request($request);
+        return $response ? new Shop($response) : null;
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {

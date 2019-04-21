@@ -10,9 +10,8 @@ namespace Dezsidog\Youzanphp\Api\Models;
 use Carbon\Carbon;
 use Jawira\CaseConverter\Convert;
 
-class OrderInfo
+class OrderInfo extends BaseModel
 {
-    public $raw;
     /**
      * @var string 主订单状态 WAIT_BUYER_PAY （等待买家付款，定金预售描述：定金待付、等待尾款支付开始、尾款待付）； TRADE_PAID（订单已支付 ）； WAIT_CONFIRM（待确认，包含待成团、待接单等等。即：买家已付款，等待成团或等待接单）； WAIT_SELLER_SEND_GOODS（等待卖家发货，即：买家已付款）； WAIT_BUYER_CONFIRM_GOODS (等待买家确认收货，即：卖家已发货) ； TRADE_SUCCESS（买家已签收以及订单成功）； TRADE_CLOSED（交易关闭）； PS：TRADE_PAID状态仅代表当前订单已支付成功，表示瞬时状态，稍后会自动修改成后面的状态。如果不关心此状态请再次请求详情接口获取下一个状态。
      */
@@ -107,18 +106,6 @@ class OrderInfo
         'confirm_time',
         'success_time'
     ];
-
-    /**
-     * OrderInfo constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     * @throws \Exception
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

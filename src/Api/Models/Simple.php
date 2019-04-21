@@ -7,20 +7,12 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
 
-class Simple
+class Simple extends BaseModel
 {
     /**
      * @var bool
      */
     public $isSuccess;
-
-    public $raw;
-
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     protected function parse()
     {

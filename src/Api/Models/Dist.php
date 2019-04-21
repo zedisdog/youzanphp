@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
 
-class Dist
+class Dist extends BaseModel
 {
     /**
      * @var string 包裹id
@@ -17,14 +17,6 @@ class Dist
      * @var ExpressInfo 包裹详情
      */
     public $expressInfo;
-
-    public $raw;
-
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     protected function parse()
     {

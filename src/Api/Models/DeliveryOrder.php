@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
 
-class DeliveryOrder
+class DeliveryOrder extends BaseModel
 {
     /**
      * @var int 改字段已弃用 包裹id已移至dists中的dist_id字段
@@ -29,14 +29,6 @@ class DeliveryOrder
      * @var Dist[] 包裹信息
      */
     public $dists;
-
-    public $raw;
-
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     protected function parse() {
         $this->pkId = $this->raw['pk_id'];

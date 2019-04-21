@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
 
-class OrderPromotionItem
+class OrderPromotionItem extends BaseModel
 {
     /**
      * @var bool 是否赠品
@@ -29,19 +29,6 @@ class OrderPromotionItem
      * @var Promotion[] 优惠明细结构体
      */
     public $promotions;
-
-    public $raw;
-
-    /**
-     * OrderPromotionItem constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

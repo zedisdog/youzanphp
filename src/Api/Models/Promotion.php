@@ -9,7 +9,7 @@ namespace Dezsidog\Youzanphp\Api\Models;
 
 use Jawira\CaseConverter\Convert;
 
-class Promotion
+class Promotion extends BaseModel
 {
     /**
      * @var string 优惠类型 tuan:团购返现 auction:降价拍 groupOn:多人拼团 pointsExchange:积分抵扣 seckill:秒杀 packageBuy:优惠套餐 presentExchange:赠品领取 goodsScan:商品扫码 customerDiscount:会员折扣 timelimitedDiscount:限时折扣 paidPromotion:支付有礼 periodBuy:周期购 scanReduce:收款码优惠 meetReduce:满减送 cashBack:订单返现 supplierMeetReduce:供货商满包邮 bale:打包一口价 coupon:优惠卡券 entireDiscount:整单优惠 groupOnHeaderDiscount:团长优惠 customerPostageFree:会员包邮 periodBuyPostageFree:周期购包邮 ignoreOddChange:抹零 pfGuideMarketing:引导促销 helpCut:助力砍价 sellerDiscount:分销商等级折扣
@@ -51,19 +51,6 @@ class Promotion
      * @var string 优惠券/码编号
      */
     public $couponId;
-
-    public $raw;
-
-    /**
-     * Promotion constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

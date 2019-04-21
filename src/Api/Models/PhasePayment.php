@@ -9,7 +9,7 @@ namespace Dezsidog\Youzanphp\Api\Models;
 
 use Carbon\Carbon;
 
-class PhasePayment
+class PhasePayment extends BaseModel
 {
     /**
      * @var int 支付阶段
@@ -35,19 +35,6 @@ class PhasePayment
      * @var string 内部支付流水号
      */
     public $innerTransactionNo;
-
-    public $raw;
-
-    /**
-     * PhasePayment constructor.
-     * @param array $raw
-     * @throws \Exception
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Exception

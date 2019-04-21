@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
 
-class PayInfo
+class PayInfo extends BaseModel
 {
     /**
      * @var int 优惠前商品总价
@@ -33,19 +33,6 @@ class PayInfo
      * @var PhasePayment[] 多阶段支付信息
      */
     public $phasePayments;
-
-    public $raw;
-
-    /**
-     * PayInfo constructor.
-     * @param array $raw
-     * @throws \Exception
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Exception

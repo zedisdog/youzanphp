@@ -10,7 +10,7 @@ namespace Dezsidog\Youzanphp\Api\Models;
 use Carbon\Carbon;
 use Jawira\CaseConverter\Convert;
 
-class SalesmanAccount
+class SalesmanAccount extends BaseModel
 {
     /**
      * @var string 手机号
@@ -48,19 +48,6 @@ class SalesmanAccount
      * @var int 分销员等级
      */
     public $level;
-
-    public $raw;
-
-    /**
-     * SalesmanAccount constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

@@ -13,7 +13,7 @@ use Jawira\CaseConverter\Convert;
  * Class FullOrderInfo
  * @package Dezsidog\Youzanphp\Client\Models
  */
-class FullOrderInfo
+class FullOrderInfo extends BaseModel
 {
     /**
      * @var OrderInfo
@@ -47,19 +47,6 @@ class FullOrderInfo
      * @var ChildInfo
      */
     public $child_info;
-
-    public $raw;
-
-    /**
-     * FullOrderInfo constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

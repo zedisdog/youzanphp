@@ -9,7 +9,7 @@ namespace Dezsidog\Youzanphp\Api\Models;
 
 use Jawira\CaseConverter\Convert;
 
-class OrderExtra
+class OrderExtra extends BaseModel
 {
     /**
      * @var bool 是否来自购物车 是：true 不是：false
@@ -116,25 +116,12 @@ class OrderExtra
      */
     public $fxInnerTransactionNo;
 
-    public $raw;
-
     public $beSure = [
         'is_from_cart',
         'is_parent_order',
         'is_sub_order',
         'is_member',
     ];
-
-    /**
-     * OrderExtra constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

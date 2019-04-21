@@ -10,7 +10,7 @@ namespace Dezsidog\Youzanphp\Api\Models;
 use Carbon\Carbon;
 use Jawira\CaseConverter\Convert;
 
-class AddressInfo
+class AddressInfo extends BaseModel
 {
     /**
      * @var string 收货人姓名
@@ -56,20 +56,6 @@ class AddressInfo
      * @var Carbon 同城送预计送达时间-结束时间 非同城送以及没有开启定时达的订单不返回
      */
     public $deliveryEndTime;
-
-    public $raw;
-
-    /**
-     * AddressInfo constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     * @throws \Exception
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

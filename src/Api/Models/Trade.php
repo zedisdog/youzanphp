@@ -32,7 +32,7 @@ use IlluminateAgnostic\Arr\Support\Arr;
  * @property-read int $real_price 阶段支付金额
  * @property-read int $refund_fee 退款金额
  */
-class Trade
+class Trade extends BaseModel
 {
     /**
      * @var int
@@ -42,10 +42,6 @@ class Trade
      * @var Order[]
      */
     public $orders;
-    /**
-     * @var array
-     */
-    public $raw;
     /**
      * @var FullOrderInfo
      */
@@ -62,17 +58,6 @@ class Trade
      * @var OrderPromotion
      */
     public $orderPromotion;
-
-    /**
-     * Trade constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

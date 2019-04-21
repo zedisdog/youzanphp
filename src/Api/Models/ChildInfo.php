@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
 
-class ChildInfo
+class ChildInfo extends BaseModel
 {
     /**
      * @var string 送礼编号
@@ -21,19 +21,6 @@ class ChildInfo
      * @var ChildOrder[] 子单详情
      */
     public $childOrders;
-
-    public $raw;
-
-    /**
-     * ChildInfo constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException

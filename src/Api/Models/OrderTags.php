@@ -6,10 +6,7 @@
 declare(strict_types=1);
 namespace Dezsidog\Youzanphp\Api\Models;
 
-
-use Jawira\CaseConverter\Convert;
-
-class OrderTags
+class OrderTags extends BaseModel
 {
     /**
      * @var bool 是否虚拟订单
@@ -67,28 +64,4 @@ class OrderTags
      * @var bool 是否定金预售
      */
     public $isDownPaymentPre;
-
-    public $raw;
-
-    /**
-     * OrderTags constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
-
-    /**
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function parse()
-    {
-        foreach ($this->raw as $key => $value) {
-            $propName = new Convert($key);
-            $this->$propName = $value;
-        }
-    }
 }

@@ -9,7 +9,7 @@ namespace Dezsidog\Youzanphp\Api\Models;
 
 use Jawira\CaseConverter\Convert;
 
-class RefundOrder
+class RefundOrder extends BaseModel
 {
     /**
      * @var int 退款类型 1:退款 - 买家申请退款; 2:退款 - 商家主动退款; 3:退款 - 一键退款
@@ -31,19 +31,6 @@ class RefundOrder
      * @var string[] 退款交易明细
      */
     public $oids;
-
-    public $raw;
-
-    /**
-     * RefundOrder constructor.
-     * @param array $raw
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    public function __construct(array $raw)
-    {
-        $this->raw = $raw;
-        $this->parse();
-    }
 
     /**
      * @throws \Jawira\CaseConverter\CaseConverterException
