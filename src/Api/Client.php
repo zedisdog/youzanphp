@@ -12,6 +12,7 @@ use Dezsidog\Youzanphp\Api\Models\Category;
 use Dezsidog\Youzanphp\Api\Models\GivePresent;
 use Dezsidog\Youzanphp\Api\Models\ListedProduct;
 use Dezsidog\Youzanphp\Api\Models\OpenId;
+use Dezsidog\Youzanphp\Api\Models\Present;
 use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
 use Dezsidog\Youzanphp\Api\Models\Shop;
 use Dezsidog\Youzanphp\Api\Models\ShopBasic;
@@ -64,7 +65,7 @@ class Client extends BaseClient
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function increasePoint(string $accountId, int $accountType, int $points, string $reason, string $biz_value = '', string $version = '3.1.0'): ?Simple
+    public function pointIncrease(string $accountId, int $accountType, int $points, string $reason, string $biz_value = '', string $version = '3.1.0'): ?Simple
     {
         $method = 'youzan.crm.customer.points.increase';
         $url = $this->buildUrl($method, $version);
@@ -366,6 +367,29 @@ class Client extends BaseClient
         $request = $this->makeRequest($url, new \Dezsidog\Youzanphp\Api\Params\GivePresent($activityId, $fansId, $buyerId));
         $response = $this->request($request);
         return $response ? new GivePresent($response) : null;
+    }
+
+    /**
+     * 获取进行中的赠品
+     * @param string $version
+     * @return Present[]|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getPresents(string $version = '3.0.0'): ?array {
+        $method = 'youzan.ump.presents.ongoing.all';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url);
+        $response = $this->request($request);
+        if ($response) {
+            $result = [];
+            foreach ($response as $item) {
+                array_push($result, new Present($item));
+            }
+            return $result;
+        } else {
+            return null;
+        }
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {

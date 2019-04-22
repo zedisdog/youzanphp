@@ -17,6 +17,7 @@ abstract class BaseModel
     protected $customerConverts = [];
     protected $lists = [];
     protected $objects = [];
+    protected $booleans = [];
 
     /**
      * BaseModel constructor.
@@ -38,11 +39,24 @@ abstract class BaseModel
         foreach ($this->raw as $key => $value) {
             $convert = new Convert($key);
             $propName = $convert->toCamel();
-            if (in_array($key, $this->dates)) {
-                $value = $value ? new Carbon($value) : null;
+            if (in_array($key, $this->dates) && $value) {
+                if (is_numeric($value)) {
+                    $value = Carbon::createFromTimestamp(intval($value/100));
+                } else {
+                    $value = new Carbon($value);
+                }
+            } else {
+                $value = null;
             }
             if (in_array($key, $this->prices)) {
                 $value = intval($value * 100);
+            }
+            if (in_array($key, $this->booleans)) {
+                if(is_string($value)) {
+                    $value = $value == "true" ? true : false;
+                } else {
+                    $value = boolval($value);
+                }
             }
             if (array_key_exists($key, $this->customerConverts)) {
                 if (is_callable($this->customerConverts[$key])) {
