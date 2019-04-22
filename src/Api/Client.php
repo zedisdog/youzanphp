@@ -10,6 +10,7 @@ namespace Dezsidog\Youzanphp\Client;
 use Carbon\Carbon;
 use Dezsidog\Youzanphp\Api\Models\Category;
 use Dezsidog\Youzanphp\Api\Models\Coupon;
+use Dezsidog\Youzanphp\Api\Models\CouponDetail;
 use Dezsidog\Youzanphp\Api\Models\GivePresent;
 use Dezsidog\Youzanphp\Api\Models\ListedProduct;
 use Dezsidog\Youzanphp\Api\Models\OpenId;
@@ -18,6 +19,7 @@ use Dezsidog\Youzanphp\Api\Models\SalesmanAccount;
 use Dezsidog\Youzanphp\Api\Models\Shop;
 use Dezsidog\Youzanphp\Api\Models\ShopBasic;
 use Dezsidog\Youzanphp\Api\Models\Simple;
+use Dezsidog\Youzanphp\Api\Models\TakeCoupon;
 use Dezsidog\Youzanphp\Api\Models\Trade;
 use Dezsidog\Youzanphp\Api\Params\AddTag;
 use Dezsidog\Youzanphp\Api\Params\CouponsUnfinished;
@@ -416,6 +418,42 @@ class Client extends BaseClient
         } else {
             return null;
         }
+    }
+
+    /**
+     * 获取优惠券详情
+     * @param int $id
+     * @param string $version
+     * @return CouponDetail|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getCoupon(int $id, string $version='3.0.0'): ?CouponDetail
+    {
+        $method = 'youzan.ump.coupon.detail.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new \Dezsidog\Youzanphp\Api\Params\CouponDetail($id));
+        $response = $this->request($request);
+        return $response ? new CouponDetail($response) : null;
+    }
+
+    /**
+     * 发放优惠券/码
+     * @param int $couponGroupId
+     * @param string $identify
+     * @param string $type
+     * @param string $version
+     * @return TakeCoupon|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function takeCoupon(int $couponGroupId, string $identify, string $type, $version='3.0.0'): ?TakeCoupon
+    {
+        $method = 'youzan.ump.coupon.take';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new \Dezsidog\Youzanphp\Api\Params\TakeCoupon($couponGroupId, $identify, $type));
+        $response = $this->request($request);
+        return $response ? new TakeCoupon($response) : null;
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {
