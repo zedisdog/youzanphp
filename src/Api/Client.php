@@ -22,6 +22,7 @@ use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\TakeCoupon;
 use Dezsidog\Youzanphp\Api\Models\Trade;
 use Dezsidog\Youzanphp\Api\Params\AddTag;
+use Dezsidog\Youzanphp\Api\Params\CouponList;
 use Dezsidog\Youzanphp\Api\Params\CouponsUnfinished;
 use Dezsidog\Youzanphp\Api\Params\IncreasePoint;
 use Dezsidog\Youzanphp\Api\Params\Items;
@@ -454,6 +455,34 @@ class Client extends BaseClient
         $request = $this->makeRequest($url, new \Dezsidog\Youzanphp\Api\Params\TakeCoupon($couponGroupId, $identify, $type));
         $response = $this->request($request);
         return $response ? new TakeCoupon($response) : null;
+    }
+
+    /**
+     * （分页查询）查询优惠券（码）活动列表
+     * @param string $groupType
+     * @param string $status
+     * @param int $pageNo
+     * @param int $pageSize
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getCouponList(string $groupType, string $status, int $pageNo = 1, int $pageSize = 1000, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.ump.coupon.search';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new CouponList($groupType, $status, $pageNo, $pageSize));
+        $response = $this->request($request);
+        if ($response) {
+            $result = [];
+            foreach ($response['groups'] as $item) {
+                array_push($result, new CouponDetail($item));
+            }
+            return [$result, $response['total']];
+        } else {
+            return null;
+        }
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {
