@@ -17,10 +17,10 @@ class OauthTest extends \PHPUnit\Framework\TestCase
         $auth = new \Dezsidog\Youzanphp\Oauth2\Oauth($this->clientId, $this->clientSecret);
         $token = $auth->requestToken($this->code, $this->redirectUri);
 
-        $this->assertNotEmpty($token->refreshToken);
+        $this->assertNotEmpty($token['refresh_token']);
 
-        $token = $auth->refreshToken($token->refreshToken);
+        $token = $auth->refreshToken($token['refresh_token']);
 
-        $this->assertNotEmpty($token->accessToken);
+        $this->assertNotEmpty($token['access_token']);
     }
 }

@@ -6,7 +6,6 @@
 namespace Dezsidog\Youzanphp;
 
 
-use Dezsidog\Youzanphp\Contract\Params;
 use Dezsidog\Youzanphp\Exceptions\BadRequestException;
 use Dezsidog\Youzanphp\Exceptions\ResponseEmptyException;
 use GuzzleHttp\Client;
@@ -81,5 +80,5 @@ abstract class BaseClient
         }
     }
 
-    abstract protected function makeRequest(string $url, ?Params $params = null, string $method = 'POST'): Request;
+    abstract protected function makeRequest(string $url, ?array $params = null, string $method = 'POST'): Request;
 }

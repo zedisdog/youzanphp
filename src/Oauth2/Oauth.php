@@ -8,7 +8,6 @@ namespace Dezsidog\Youzanphp\Oauth2;
 
 
 use Dezsidog\Youzanphp\BaseClient;
-use Dezsidog\Youzanphp\Contract\Params;
 use GuzzleHttp\Psr7\Request;
 use function GuzzleHttp\Psr7\stream_for;
 
@@ -28,32 +27,47 @@ class Oauth extends BaseClient
 
     /**
      * 请求token
+     * @param string $code
      * @param string $redirectUri
-     * @return Token
+     * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function requestToken(string $code, string $redirectUri): Token
+    public function requestToken(string $code, string $redirectUri): ?array
     {
-        $params = new TokenParams($this->clientId, $this->clientSecret, $code, $redirectUri);
+        $params = [
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'code' => $code,
+            'redirect_uri' => $redirectUri,
+            'authorize_type' => 'authorization_code'
+        ];
         $request = $this->makeRequest(self::URL, $params);
         $response = $this->request($request);
-        return new Token($response);
+        return $response;
     }
 
     /**
      * @param string $refreshToken
-     * @return Token
+     * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function refreshToken(string $refreshToken): Token
+    public function refreshToken(string $refreshToken): ?array
     {
-        $params = new RefreshTokenParams($this->clientId, $this->clientSecret, $refreshToken);
+        $params = [
+            'authorize_type' => 'refresh_token',
+            'refresh_token' => $refreshToken,
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret
+        ];
         $request = $this->makeRequest(self::URL, $params);
         $response = $this->request($request);
-        return new Token($response);
+        return $response;
     }
 
-    protected function makeRequest(string $url, ?Params $params = null, string $method = 'POST'): Request {
+    protected function makeRequest(string $url, ?array $params = null, string $method = 'POST'): Request {
+        if (is_array($params)) {
+            $params = \GuzzleHttp\json_encode($params);
+        }
         return new Request($method, $url, [], stream_for($params));
     }
 }
