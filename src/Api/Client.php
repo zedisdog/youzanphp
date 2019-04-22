@@ -27,6 +27,7 @@ use Dezsidog\Youzanphp\Api\Params\CouponsUnfinished;
 use Dezsidog\Youzanphp\Api\Params\IncreasePoint;
 use Dezsidog\Youzanphp\Api\Params\Items;
 use Dezsidog\Youzanphp\Api\Params\SalesmanByTradeId;
+use Dezsidog\Youzanphp\Api\Params\SalesmanList;
 use Dezsidog\Youzanphp\BaseClient;
 use Dezsidog\Youzanphp\Contract\Params;
 use GuzzleHttp\Psr7\Request;
@@ -80,6 +81,7 @@ class Client extends BaseClient
     }
 
     /**
+     * 获取分销员信息
      * @param int $fansType
      * @param int $fansId
      * @param string $mobile
@@ -88,7 +90,7 @@ class Client extends BaseClient
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function salesmanAccount(int $fansType, int $fansId, string $mobile, string $version = '3.0.1'): SalesmanAccount
+    public function getSalesman(int $fansType, int $fansId, string $mobile, string $version = '3.0.1'): SalesmanAccount
     {
         $method = 'youzan.salesman.account.get';
         $url = $this->buildUrl($method, $version);
@@ -480,6 +482,32 @@ class Client extends BaseClient
                 array_push($result, new CouponDetail($item));
             }
             return [$result, $response['total']];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取分销员列表
+     * @param int $pageNo
+     * @param int $pageSize
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getSalesmanList($pageNo = 1, $pageSize = 100, $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.salesman.accounts.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new SalesmanList($pageNo, $pageSize));
+        $response = $this->request($request);
+        if ($response) {
+            $result = [];
+            foreach ($response['accounts'] as $item) {
+                array_push($result, new SalesmanAccount($item));
+            }
+            return [$result, $response['total_results']];
         } else {
             return null;
         }
