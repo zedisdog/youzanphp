@@ -9,6 +9,7 @@ namespace Dezsidog\Youzanphp\Client;
 
 use Carbon\Carbon;
 use Dezsidog\Youzanphp\Api\Models\Category;
+use Dezsidog\Youzanphp\Api\Models\Coupon;
 use Dezsidog\Youzanphp\Api\Models\GivePresent;
 use Dezsidog\Youzanphp\Api\Models\ListedProduct;
 use Dezsidog\Youzanphp\Api\Models\OpenId;
@@ -19,6 +20,7 @@ use Dezsidog\Youzanphp\Api\Models\ShopBasic;
 use Dezsidog\Youzanphp\Api\Models\Simple;
 use Dezsidog\Youzanphp\Api\Models\Trade;
 use Dezsidog\Youzanphp\Api\Params\AddTag;
+use Dezsidog\Youzanphp\Api\Params\CouponsUnfinished;
 use Dezsidog\Youzanphp\Api\Params\IncreasePoint;
 use Dezsidog\Youzanphp\Api\Params\Items;
 use Dezsidog\Youzanphp\Api\Params\SalesmanByTradeId;
@@ -385,6 +387,30 @@ class Client extends BaseClient
             $result = [];
             foreach ($response as $item) {
                 array_push($result, new Present($item));
+            }
+            return $result;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取未结束的优惠活动
+     * @param string $fields
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function getUnfinishedCoupons(string $fields = '', string $version = '3.0.0'): ?array {
+        $method = 'youzan.ump.coupons.unfinished.search';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, new CouponsUnfinished($fields));
+        $response = $this->request($request);
+        if ($response) {
+            $result = [];
+            foreach ($response as $item) {
+                array_push($result, new Coupon($item));
             }
             return $result;
         } else {
