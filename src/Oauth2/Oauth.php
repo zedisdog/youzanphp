@@ -26,6 +26,23 @@ class Oauth extends BaseClient
     }
 
     /**
+     * @param int $shopId
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function requestTokenSilent(int $shopId) {
+        $params = [
+            'client_id' => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'grant_id' => $shopId,
+            'authorize_type' => 'silent'
+        ];
+        $request = $this->makeRequest(self::URL, $params);
+        $response = $this->request($request);
+        return $response;
+    }
+
+    /**
      * 请求token
      * @param string $code
      * @param string $redirectUri
@@ -37,9 +54,9 @@ class Oauth extends BaseClient
         $params = [
             'client_id' => $this->clientId,
             'client_secret' => $this->clientSecret,
-            'code' => $code,
             'redirect_uri' => $redirectUri,
-            'authorize_type' => 'authorization_code'
+            'authorize_type' => 'authorization_code',
+            'code' => $code
         ];
         $request = $this->makeRequest(self::URL, $params);
         $response = $this->request($request);
