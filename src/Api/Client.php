@@ -474,6 +474,30 @@ class Client extends BaseClient
         return $this->request($request);
     }
 
+    /**
+     * 通过 open_id 或者 fans_id 获取用户信息
+     * @param integer|string $id fans_id或者open_id
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getFollower($id, string $version='3.0.0'): ?array
+    {
+        $method = 'youzan.users.weixin.follower.get';
+
+        $url = $this->buildUrl($method, $version);
+
+        if (is_string($id) && preg_match('/[a-zA-Z]/',$id)) {
+            $params['weixin_openid'] = $id;
+        } else {
+            $params['fans_id'] = $id;
+        }
+
+        $request = $this->makeRequest($url, $params);
+
+        return $this->request($request);
+    }
+
     protected function buildUrl(string $method, string $version, array $query = []) {
         $query = array_merge(['access_token' => $this->accessToken], $query);
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
