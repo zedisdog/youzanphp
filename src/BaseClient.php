@@ -69,13 +69,17 @@ abstract class BaseClient
         $body = $response->getBody();
         $this->logger->info("-response " . $body);
         $data = \GuzzleHttp\json_decode($body, true);
-        $this->checkoutGateWayErrors($data);
         $error = true;
         if (empty($data)) {
             if (!$this->dontReportAll) {
                 throw new ResponseEmptyException("response is empty");
             }
             $this->logger->warning('response is empty');
+        } elseif (isset($data['gw_err_resp'])) {
+            if (!$this->dontReportAll) {
+                $this->throwGatewayExceptions($data);
+            }
+            $this->logger->warning(sprintf('response has global errors: [code: %d, message: %s]', $error['err_code'], $error['err_msg']));
         } elseif ($data['code'] != 200 || $data['success'] != true) {
             if (!$this->dontReportAll) {
                 throw new BadRequestException($data['success'], $data['code'], $data['message']);
@@ -89,12 +93,6 @@ abstract class BaseClient
             return null;
         } else {
             return $data['data'];
-        }
-    }
-
-    protected function checkoutGateWayErrors(array $data) {
-        if (isset($data['gw_err_resp'])) {
-            $this->throwGatewayExceptions($data['gw_err_resp']);
         }
     }
 
