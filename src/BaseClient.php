@@ -7,9 +7,20 @@ namespace Dezsidog\Youzanphp;
 
 
 use Dezsidog\Youzanphp\Exceptions\BadRequestException;
+use Dezsidog\Youzanphp\Exceptions\BusinessErrorException;
+use Dezsidog\Youzanphp\Exceptions\ForbidException;
+use Dezsidog\Youzanphp\Exceptions\InvalidApiException;
+use Dezsidog\Youzanphp\Exceptions\InvalidContentException;
+use Dezsidog\Youzanphp\Exceptions\InvalidModeException;
+use Dezsidog\Youzanphp\Exceptions\InvalidRequestException;
+use Dezsidog\Youzanphp\Exceptions\InvalidUrlException;
+use Dezsidog\Youzanphp\Exceptions\MoreRequestException;
 use Dezsidog\Youzanphp\Exceptions\ResponseEmptyException;
+use Dezsidog\Youzanphp\Exceptions\ServerErrorException;
+use Dezsidog\Youzanphp\Exceptions\TokenException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use http\Exception\InvalidArgumentException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -58,6 +69,7 @@ abstract class BaseClient
         $body = $response->getBody();
         $this->logger->info("-response " . $body);
         $data = \GuzzleHttp\json_decode($body, true);
+        $this->checkoutGateWayErrors($data);
         $error = true;
         if (empty($data)) {
             if (!$this->dontReportAll) {
@@ -80,5 +92,55 @@ abstract class BaseClient
         }
     }
 
+    protected function checkoutGateWayErrors(array $data) {
+        if (isset($data['gw_err_resp'])) {
+            $this->throwGatewayExceptions($data['gw_err_resp']);
+        }
+    }
+
     abstract protected function makeRequest(string $url, ?array $params = null, string $method = 'POST'): Request;
+
+    /**
+     * @param $error
+     * @throws \RuntimeException
+     */
+    protected function throwGatewayExceptions($error)
+    {
+        switch ($error['err_code']) {
+            case 4201:
+            case 4202:
+            case 4203:
+                throw new TokenException($error['err_msg'], $error['err_code']);
+                break;
+            case 4001:
+                throw new InvalidUrlException($error['err_msg'], $error['err_code']);
+                break;
+            case 4004:
+                throw new InvalidContentException($error['err_msg'], $error['err_code']);
+                break;
+            case 4005:
+                throw new InvalidApiException($error['err_msg'], $error['err_code']);
+                break;
+            case 4006:
+                throw new InvalidModeException($error['err_msg'], $error['err_code']);
+                break;
+            case 4007:
+                throw new InvalidRequestException($error['err_msg'], $error['err_code']);
+                break;
+            case 4101:
+                throw new MoreRequestException($error['err_msg'], $error['err_code']);
+                break;
+            case 4204:
+                throw new ForbidException($error['err_msg'], $error['err_code']);
+                break;
+            case 5001:
+                throw new ServerErrorException($error['err_msg'], $error['err_code']);
+                break;
+            case 5002:
+                throw new BusinessErrorException($error['err_msg'], $error['err_code']);
+                break;
+            default:
+                throw new \RuntimeException($error['err_msg'], $error['err_code']);
+        }
+    }
 }
