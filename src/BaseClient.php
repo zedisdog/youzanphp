@@ -20,9 +20,9 @@ use Dezsidog\Youzanphp\Exceptions\ServerErrorException;
 use Dezsidog\Youzanphp\Exceptions\TokenException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use http\Exception\InvalidArgumentException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 abstract class BaseClient
 {
@@ -39,15 +39,19 @@ abstract class BaseClient
      */
     protected $dontReportAll = false;
 
-    public function __construct()
+    public function __construct(?LoggerInterface $logger = null)
     {
         $this->client = new Client([
             'headers' => [
                 'Content-Type' => 'application/json'
             ]
         ]);
-        $this->logger = new Logger('oauth');
-        $this->logger->pushHandler(new StreamHandler('php://stderr'));
+        if ($logger) {
+            $this->logger = $logger;
+        } else {
+            $this->logger = new Logger('oauth');
+            $this->logger->pushHandler(new StreamHandler('php://stderr'));
+        }
     }
 
     public function dontReportAll()

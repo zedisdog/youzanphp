@@ -10,6 +10,7 @@ namespace Dezsidog\Youzanphp\Oauth2;
 use Dezsidog\Youzanphp\BaseClient;
 use GuzzleHttp\Psr7\Request;
 use function GuzzleHttp\Psr7\stream_for;
+use Psr\Log\LoggerInterface;
 
 class Oauth extends BaseClient
 {
@@ -18,9 +19,9 @@ class Oauth extends BaseClient
     protected $clientId;
     protected $clientSecret;
 
-    public function __construct(string $clientId, string $clientSecret)
+    public function __construct(string $clientId, string $clientSecret, ?LoggerInterface $logger = null)
     {
-        parent::__construct();
+        parent::__construct($logger);
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
     }

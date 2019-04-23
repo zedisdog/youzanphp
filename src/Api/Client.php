@@ -11,15 +11,16 @@ use Carbon\Carbon;
 use Dezsidog\Youzanphp\BaseClient;
 use GuzzleHttp\Psr7\Request;
 use Jawira\CaseConverter\Convert;
+use Psr\Log\LoggerInterface;
 
 class Client extends BaseClient
 {
     const URL = 'https://open.youzanyun.com/api/';
     protected $accessToken;
 
-    public function __construct(string $accessToken = '')
+    public function __construct(string $accessToken = '', ?LoggerInterface $logger = null)
     {
-        parent::__construct();
+        parent::__construct($logger);
         $this->accessToken = $accessToken;
     }
 
@@ -201,8 +202,8 @@ class Client extends BaseClient
     ): ?array {
         $method = 'youzan.items.onsale.get';
         $url = $this->buildUrl($method, $version);
-        $updateTimeStart = $updateTimeStart->valueOf();
-        $updateTimeEnd = $updateTimeEnd->valueOf();
+        $updateTimeStart = ($updateTimeStart->timestamp * 1000) + intval(substr(strval($updateTimeStart->micro), 0, 3));
+        $updateTimeEnd = ($updateTimeEnd->timestamp * 1000) + intval(substr(strval($updateTimeEnd->micro), 0, 3));
         $params = $this->convert(compact(
             'pageNo',
             'pageSize',
@@ -244,8 +245,8 @@ class Client extends BaseClient
     ): ?array {
         $method = 'youzan.items.inventory.get';
         $url = $this->buildUrl($method, $version);
-        $updateTimeStart = $updateTimeStart->valueOf();
-        $updateTimeEnd = $updateTimeEnd->valueOf();
+        $updateTimeStart = ($updateTimeStart->timestamp * 1000) + intval(substr(strval($updateTimeStart->micro), 0, 3));
+        $updateTimeEnd = ($updateTimeEnd->timestamp * 1000) + intval(substr(strval($updateTimeEnd->micro), 0, 3));
         $params = $this->convert(compact(
             'pageNo',
             'pageSize',
