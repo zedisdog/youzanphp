@@ -17,9 +17,14 @@ class Client extends BaseClient
     const URL = 'https://open.youzanyun.com/api/';
     protected $accessToken;
 
-    public function __construct(string $accessToken)
+    public function __construct(string $accessToken = '')
     {
         parent::__construct();
+        $this->accessToken = $accessToken;
+    }
+
+    public function setAccessToken(string $accessToken)
+    {
         $this->accessToken = $accessToken;
     }
 
