@@ -198,7 +198,7 @@ class Client extends BaseClient
         ?Carbon $updateTimeEnd = null,
         string $orderBy = 'created_time:desc',
         string $version = '3.0.0'
-    ): array {
+    ): ?array {
         $method = 'youzan.items.onsale.get';
         $url = $this->buildUrl($method, $version);
         $updateTimeStart = $updateTimeStart->valueOf();
