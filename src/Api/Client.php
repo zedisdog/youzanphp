@@ -330,6 +330,27 @@ class Client extends BaseClient
     }
 
     /**
+     * @param string $keyword
+     * @param int $pageNo
+     * @param int $pageSize
+     * @param int|null $showSoldOut
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Jawira\CaseConverter\CaseConverterException
+     */
+    public function itemSearch(
+        string $keyword,
+        int $pageNo = 1,
+        int $pageSize = 100,
+        ?int $showSoldOut = null,
+        $version = '3.0.0'
+    ): ?array
+    {
+        return $this->getProducts($pageNo, $pageSize, '', $showSoldOut, $keyword, '', $version);
+    }
+
+    /**
      * 获取店铺基础信息
      * @param string $version
      * @return array|null
@@ -416,6 +437,7 @@ class Client extends BaseClient
         $response = $this->request($request);
         return $response;
     }
+    // 已迁移的用户使用新的sdk
 
     /**
      * 发放优惠券/码
