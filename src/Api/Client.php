@@ -70,19 +70,24 @@ class Client extends BaseClient
 
     /**
      * 获取分销员信息
-     * @param int $fansType 粉丝类型（自有粉丝: fans_type = 1；当传mobile时，和fans_id一样传0）
-     * @param int $fansId 粉丝id（mobile或fans_id选其一，另者置为0，当fans_id和mobile都传时，优先按mobile查询）
-     * @param string $mobile 手机号（mobile或fans_id选其一，另者置为0，当fans_id和mobile都传时，优先按mobile查询）
+     * @param $identification
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function getSalesman(string $mobile, int $fansType = 0, int $fansId = 0, string $version = '3.0.1'): ?array
+    public function getSalesman($identification, string $version = '3.0.1'): ?array
     {
         $method = 'youzan.salesman.account.get';
         $url = $this->buildUrl($method, $version);
-        $params = $this->convert(compact('mobile', 'fansId', 'fansType'));
+        if (is_string($identification) && preg_match('/^1[3-9]\d{9}$/', $identification)) {
+            $params['mobile'] = $identification;
+            $params['fans_type'] = 0;
+            $params['fans_id'] = 0;
+        } else {
+            $params['fans_id'] = $identification;
+            $params['mobile'] = '0';
+            $params['fans_type'] = 1;
+        }
         $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
         return $response;
@@ -374,7 +379,7 @@ class Client extends BaseClient
         $url = $this->buildUrl($method, $version);
         $request = $this->makeRequest($url);
         $response = $this->request($request);
-        return $response;
+        return $response ? $response['presents'] : null;
     }
 
     /**
