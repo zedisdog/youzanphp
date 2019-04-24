@@ -127,7 +127,8 @@ class Client extends BaseClient
             $params['fans_id'] = $id;
         }
         $request = $this->makeRequest($url, $params);
-        return $this->request($request);
+        $response = $this->request($request);
+        return $response ? $response['user'] : null;
     }
 
     /**
