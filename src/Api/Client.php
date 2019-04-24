@@ -524,8 +524,8 @@ class Client extends BaseClient
         }
 
         $request = $this->makeRequest($url, $params);
-
-        return $this->request($request);
+        $response = $this->request($request);
+        return $response ? $response['user'] : null;
     }
 
     protected function buildUrl(string $method, string $version, array $query = []) {
