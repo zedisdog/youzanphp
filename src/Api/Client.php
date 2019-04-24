@@ -507,7 +507,8 @@ class Client extends BaseClient
             ];
         }
         $request = $this->makeRequest($url, $params);
-        return $this->request($request);
+        $response = $this->request($request);
+        return $response ? $response['item'] : null;
     }
 
     /**
