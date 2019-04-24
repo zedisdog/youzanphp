@@ -108,6 +108,30 @@ class Client extends BaseClient
 
     /**
      * 向用户添加tag
+     * @param int $id
+     * @param string $tags
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function addTags(int $id, string $tags, $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.users.weixin.follower.tags.add';
+        $url = $this->buildUrl($method, $version);
+        $params = [
+            'tags' => $tags
+        ];
+        if (is_string($id) && preg_match('/[a-zA-Z]/',$id)) {
+            $params['weixin_openid'] = $id;
+        } else {
+            $params['fans_id'] = $id;
+        }
+        $request = $this->makeRequest($url, $params);
+        return $this->request($request);
+    }
+
+    /**
+     * 向客户添加tag
      * @param string $accountType 帐号类型。目前支持以下选项（只支持传一种）： FansID：自有粉丝ID， Mobile：手机号， YouZanAccount：有赞账号，OpenUserId：三方自身账号， WeiXinOpenId：微信openId
      * @param string $accountId 账户ID
      * @param array $tags 标签集合
@@ -116,7 +140,7 @@ class Client extends BaseClient
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function addTags(string $accountType, string $accountId, array $tags, string $version = '4.0.0'): ?bool
+    public function addCostumerTags(string $accountType, string $accountId, array $tags, string $version = '4.0.0'): ?bool
     {
         $method = 'youzan.scrm.tag.relation.add';
         $url = $this->buildUrl($method, $version);
