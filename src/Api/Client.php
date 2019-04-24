@@ -351,24 +351,24 @@ class Client extends BaseClient
     }
 
     /**
-     * @param array $item_ids
-     * @param int $page_no
-     * @param int $page_size
-     * @param int|null $show_sold_out
+     * @param array $itemIds
+     * @param int $pageNo
+     * @param int $pageSize
+     * @param int|null $showSoldOut
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
     public function itemListByItemIds(
-        array $item_ids,
-        int $page_no = 1,
-        int $page_size = 100,
-        ?int $show_sold_out = null,
+        array $itemIds,
+        int $pageNo = 1,
+        int $pageSize = 100,
+        ?int $showSoldOut = null,
         $version = '3.0.0'
     ): ?array
     {
-        return $this->getProducts($page_no, $page_size, implode(',', $item_ids), $show_sold_out, '', '', $version);
+        return $this->getProducts($pageNo, $pageSize, implode(',', $itemIds), $showSoldOut, '', '', $version);
     }
 
     /**
