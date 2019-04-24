@@ -159,7 +159,7 @@ class Client extends BaseClient
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getOpenIdByPhone(string $mobile, string $countryCode = '86', string $version = '3.0.0'): ?string
+    public function getOpenIdByPhone(string $mobile, string $countryCode = '86', string $version = '3.0.0'): ?array
     {
         $method = 'youzan.user.weixin.openid.get';
         $url = $this->buildUrl($method, $version);
@@ -168,7 +168,7 @@ class Client extends BaseClient
             'country_code' => $countryCode
         ]);
         $response = $this->request($request);
-        return $response ? $response['mobile'] : null;
+        return $response;
     }
 
     /**
