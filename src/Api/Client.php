@@ -29,6 +29,11 @@ class Client extends BaseClient
         $this->accessToken = $accessToken;
     }
 
+    public function getAccessToken(): ?string
+    {
+        return $this->accessToken;
+    }
+
     /**
      * 获取交易信息
      * @param string $tid 订单id
