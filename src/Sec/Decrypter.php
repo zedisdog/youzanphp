@@ -18,6 +18,11 @@ class Decrypter
         $this->secret = $secret;
     }
 
+    /**
+     * 实例化 然后调这个方法
+     * @param string $data
+     * @return array
+     */
     public function decrypt(string $data): array
     {
         $secret = $this->decode();
@@ -26,7 +31,7 @@ class Decrypter
         $cipher->setKey($key);
         $cipher->setIV($this->iv);
         $result = $cipher->decrypt($data);
-        return \GuzzleHttp\json_decode($this->specialFilter($result));
+        return \GuzzleHttp\json_decode($this->specialFilter($result), true);
     }
 
     protected function decode(): string
@@ -43,7 +48,12 @@ class Decrypter
         return $result;
     }
 
-    //过滤ASCII码
+    /**
+     * 这是有赞大佬给我的
+     * 过滤ASCII码
+     * @param $string
+     * @return string
+     */
     protected static function specialFilter($string){
         if(!$string) return '';
 
