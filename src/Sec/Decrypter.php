@@ -25,25 +25,22 @@ class Decrypter
      */
     public function decrypt(string $data): array
     {
-        $secret = $this->decode();
-        $key = $this->getKey($secret);
+        $data = $this->decode($data);
+        $key = $this->getKey($this->secret);
         $cipher = new AES();
         $cipher->setKey($key);
         $cipher->setIV($this->iv);
         $result = $cipher->decrypt($data);
-        if (mb_detect_encoding($result) != 'UTF-8') {
-            $result = mb_convert_encoding($result, 'UTF-8');
-        }
         return \GuzzleHttp\json_decode($this->specialFilter($result), true);
     }
 
-    protected function decode(): string
+    protected function decode(string $data): string
     {
-        return base64_decode(urldecode($this->secret));
+        return base64_decode(urldecode($data));
     }
 
     protected function getKey(string $secret): string {
-        $result = substr($secret, 0, 16);
+        $result = mb_substr($secret, 0, 16);
         $len = strlen($result);
         for ($i = 0; $i < 16-$len; $i++) {
             $result .= '0';
