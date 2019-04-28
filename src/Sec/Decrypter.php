@@ -36,7 +36,10 @@ class Decrypter
 
     protected function decode(string $data): string
     {
-        return base64_decode(urldecode($data));
+        if (strpos($data, '%') !== false) {
+            $data = urldecode($data);
+        }
+        return base64_decode($data);
     }
 
     protected function getKey(string $secret): string {
