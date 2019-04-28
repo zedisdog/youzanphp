@@ -31,6 +31,9 @@ class Decrypter
         $cipher->setKey($key);
         $cipher->setIV($this->iv);
         $result = $cipher->decrypt($data);
+        if (mb_detect_encoding($result) != 'UTF-8') {
+            $result = mb_convert_encoding($result, 'UTF-8');
+        }
         return \GuzzleHttp\json_decode($this->specialFilter($result), true);
     }
 
