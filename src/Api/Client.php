@@ -4,7 +4,7 @@
  */
 
 declare(strict_types=1);
-namespace Dezsidog\Youzanphp\Client;
+namespace Dezsidog\Youzanphp\Api;
 
 
 use Carbon\Carbon;
