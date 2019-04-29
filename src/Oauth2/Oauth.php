@@ -26,6 +26,16 @@ class Oauth extends BaseClient
         $this->clientSecret = $clientSecret;
     }
 
+    public function getClientId(): string
+    {
+        return $this->clientId;
+    }
+
+    public function getClientSecret(): string
+    {
+        return $this->clientSecret;
+    }
+
     /**
      * @param int $shopId
      * @return array|bool
