@@ -75,7 +75,7 @@ class Client extends BaseClient
 
     /**
      * 获取分销员信息
-     * @param $identification
+     * @param string|int $identification
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
