@@ -410,6 +410,12 @@ class Client extends BaseClient
             'fansId',
             'buyerId'
         ));
+        if (!$params['fans_id']) {
+            unset($params['fans_id']);
+        }
+        if (!$params['buyer_id']) {
+            unset($params['buyer_id']);
+        }
         $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
         return $response;
