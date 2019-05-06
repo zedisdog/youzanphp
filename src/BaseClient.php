@@ -84,7 +84,7 @@ abstract class BaseClient
                 $this->throwGatewayExceptions($data);
             }
             $this->logger->warning(sprintf('response has global errors: [code: %d, message: %s]', $error['err_code'], $error['err_msg']));
-        } elseif ((isset($data['code']) && $data['code'] != 200) || $data['success'] != true) {
+        } elseif ((isset($data['code']) && $data['code'] != 200) || (isset($data['success']) && $data['success'] != true)) {
             if (!$this->dontReportAll) {
                 throw new BadRequestException($data['success'], $data['code'], $data['message']);
             }
