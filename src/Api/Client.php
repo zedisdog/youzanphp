@@ -474,7 +474,7 @@ class Client extends BaseClient
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function takeCoupon(int $couponGroupId, string $identify, string $type, $version='3.0.0'): ?array
+    public function takeCoupon(int $couponGroupId, string $identify, string $type = 'fans_id', $version='3.0.0'): ?array
     {
         $method = 'youzan.ump.coupon.take';
         $url = $this->buildUrl($method, $version);
