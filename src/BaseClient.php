@@ -86,9 +86,9 @@ abstract class BaseClient
             $this->logger->warning(sprintf('response has global errors: [code: %d, message: %s]', $error['err_code'], $error['err_msg']));
         } elseif ((isset($data['code']) && $data['code'] != 200) || (isset($data['success']) && $data['success'] != true)) {
             if (!$this->dontReportAll) {
-                throw new BadRequestException($data['success'], $data['code'], $data['message']);
+                throw new BadRequestException($data['success'] ?? false, $data['code'], $data['message']);
             }
-            $this->logger->warning(sprintf("bad request: [code: %d, success: %s, message: %s]", $data['code'], $data['success'] ? "true" : "false", $data['message']));
+            $this->logger->warning(sprintf("bad request: [code: %d, success: %s, message: %s]", $data['code'], (isset($data['success']) && $data['success']) ? "true" : "false", $data['message']));
         } elseif (isset($data['error_response'])) {
             if (!$this->dontReportAll) {
                 throw new BadRequestException(false, $data['error_response']['code'], $data['error_response']['msg']);
