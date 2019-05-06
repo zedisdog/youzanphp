@@ -348,7 +348,7 @@ class Client extends BaseClient
         string $keyword,
         int $pageNo = 1,
         int $pageSize = 100,
-        ?int $showSoldOut = null,
+        int $showSoldOut = 2,
         $version = '3.0.0'
     ): ?array
     {
@@ -369,7 +369,7 @@ class Client extends BaseClient
         array $itemIds,
         int $pageNo = 1,
         int $pageSize = 100,
-        ?int $showSoldOut = null,
+        int $showSoldOut = 2,
         $version = '3.0.0'
     ): ?array
     {
