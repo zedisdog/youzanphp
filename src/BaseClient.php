@@ -115,41 +115,41 @@ abstract class BaseClient
      */
     protected function throwGatewayExceptions($error)
     {
-        switch ($error['err_code']) {
+        switch ($error['gw_err_resp']['err_code']) {
             case 4201:
             case 4202:
             case 4203:
-                throw new TokenException(strval($error['err_msg']), intval($error['err_code']));
+                throw new TokenException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4001:
-                throw new InvalidUrlException(strval($error['err_msg']), intval($error['err_code']));
+                throw new InvalidUrlException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4004:
-                throw new InvalidContentException(strval($error['err_msg']), intval($error['err_code']));
+                throw new InvalidContentException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4005:
-                throw new InvalidApiException(strval($error['err_msg']), intval($error['err_code']));
+                throw new InvalidApiException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4006:
-                throw new InvalidModeException(strval($error['err_msg']), intval($error['err_code']));
+                throw new InvalidModeException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4007:
-                throw new InvalidRequestException(strval($error['err_msg']), intval($error['err_code']));
+                throw new InvalidRequestException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4101:
-                throw new MoreRequestException(strval($error['err_msg']), intval($error['err_code']));
+                throw new MoreRequestException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4204:
-                throw new ForbidException(strval($error['err_msg']), intval($error['err_code']));
+                throw new ForbidException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 5001:
-                throw new ServerErrorException(strval($error['err_msg']), intval($error['err_code']));
+                throw new ServerErrorException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 5002:
-                throw new BusinessErrorException(strval($error['err_msg']), intval($error['err_code']));
+                throw new BusinessErrorException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             default:
-                throw new \RuntimeException(strval($error['err_msg']), intval($error['err_code']));
+                throw new \RuntimeException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
         }
     }
 }
