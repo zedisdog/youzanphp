@@ -95,7 +95,7 @@ class Client extends BaseClient
         }
         $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
-        return $response;
+        return $response['user'];
     }
 
     /**
