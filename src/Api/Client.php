@@ -428,11 +428,11 @@ class Client extends BaseClient
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPresents(?array $fields = null, string $version = '3.0.0'): ?array {
+    public function getPresents(array $fields = [], string $version = '3.0.0'): ?array {
         $method = 'youzan.ump.presents.ongoing.all';
         $url = $this->buildUrl($method, $version);
         $request = $this->makeRequest($url, [
-            'fields' => $fields
+            'fields' => implode(',', $fields)
         ]);
         $response = $this->request($request);
         return $response ? $response['presents'] : null;
