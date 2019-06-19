@@ -14,7 +14,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "monolog/monolog": "^1.24",
         "pragmarx/ia-arr": "^5.8",
-        "nesbot/carbon": "~1.25.0",
+        "nesbot/carbon": "^2.0.0",
         "jawira/case-converter": "^2.0",
         "phpseclib/phpseclib": "^2.0"
     },
