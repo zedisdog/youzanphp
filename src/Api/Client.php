@@ -423,14 +423,17 @@ class Client extends BaseClient
 
     /**
      * 获取进行中的赠品
+     * @param array $fields
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPresents(string $version = '3.0.0'): ?array {
+    public function getPresents(array $fields = [], string $version = '3.0.0'): ?array {
         $method = 'youzan.ump.presents.ongoing.all';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url);
+        $request = $this->makeRequest($url, [
+            'fields' => implode(',', $fields)
+        ]);
         $response = $this->request($request);
         return $response ? $response['presents'] : null;
     }
@@ -587,6 +590,31 @@ class Client extends BaseClient
         $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
         return $response ? $response['user'] : null;
+    }
+
+    /**
+     * @param string $desc
+     * @param string $oid
+     * @param int $refundFee
+     * @param string $tid
+     * @param string $version
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function refund(string $desc, string $oid, int $refundFee, string $tid, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.trade.refund.seller.active';
+
+        $url = $this->buildUrl($method, $version);
+
+        $request = $this->makeRequest($url, [
+            'refund_fee' => $refundFee,
+            'oid' => $oid,
+            'tid' => $tid,
+            'desc' => $desc
+        ]);
+        $response = $this->request($request);
+        return $response;
     }
 
     /**
