@@ -601,7 +601,7 @@ class Client extends BaseClient
      * @return array|bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function refund(string $desc, string $oid, int $refundFee, string $tid, string $version = '3.0.0')
+    public function refund(string $desc, string $oid, int $refundFee, string $tid, string $version = '3.0.0'): ?array
     {
         $method = 'youzan.trade.refund.seller.active';
 
