@@ -630,11 +630,7 @@ class Client extends BaseClient
     {
         $method = 'youzan.ebiz.external.ticket.create';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'tickets' => $tickets,
-            'order_no' => $orderNo,
-            'single_num' => $singleNum
-        ]);
+        $request = $this->makeRequest($url, compact('tickets', 'orderNo', 'singleNum'));
         $response = $this->request($request);
         return $response;
     }
