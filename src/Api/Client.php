@@ -592,6 +592,31 @@ class Client extends BaseClient
         return $response ? $response['user'] : null;
     }
 
+    /**
+     * @param string $desc
+     * @param string $oid
+     * @param int $refundFee
+     * @param string $tid
+     * @param string $version
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function refund(string $desc, string $oid, int $refundFee, string $tid, string $version = '3.0.0')
+    {
+        $method = 'youzan.trade.refund.seller.active';
+
+        $url = $this->buildUrl($method, $version);
+
+        $request = $this->makeRequest($url, [
+            'refund_fee' => $refundFee,
+            'oid' => $oid,
+            'tid' => $tid,
+            'desc' => $desc
+        ]);
+        $response = $this->request($request);
+        return $response;
+    }
+
     protected function buildUrl(string $method, string $version, array $query = []) {
         $query = array_merge(['access_token' => $this->accessToken], $query);
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
