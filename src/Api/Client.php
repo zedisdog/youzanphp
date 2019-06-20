@@ -618,6 +618,24 @@ class Client extends BaseClient
     }
 
     /**
+     * 外部电子卡券创建核销码
+     * @param string $tickets
+     * @param string $orderNo
+     * @param int $singleNum
+     * @param string $version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function ticketCreate(string $tickets, string $orderNo, int $singleNum = 1, string $version = '1.0.0'): ?bool
+    {
+        $method = 'youzan.ebiz.external.ticket.create';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, compact('tickets', 'orderNo', 'singleNum'));
+        $response = $this->request($request);
+        return $response;
+    }
+
+    /**
      * 外部电子卡券核销
      * @param array $params
      * @param string $version
