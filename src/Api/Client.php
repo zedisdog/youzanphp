@@ -617,6 +617,25 @@ class Client extends BaseClient
         return $response;
     }
 
+    /**
+     * 外部电子卡券核销
+     * @param array $params
+     * @param string $version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function ticketVerify(array $params, $version = '1.0.0'): ?bool
+    {
+        if (empty($params['tickets']) || empty($params['orderNo'])) {
+            throw new \LogicException('fields [tickets],[orderNo] are required');
+        }
+        $method = 'youzan.ebiz.external.ticket.verify';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, $params);
+        $response = $this->request($request);
+        return $response;
+    }
+
     protected function buildUrl(string $method, string $version, array $query = []) {
         $query = array_merge(['access_token' => $this->accessToken], $query);
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
