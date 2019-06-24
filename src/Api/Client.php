@@ -654,6 +654,29 @@ class Client extends BaseClient
         return $response;
     }
 
+    /**
+     * @param string $push_url
+     * @param string $compensate_url
+     * @param string $shop_id
+     * @param string $provider
+     * @param string $version
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function ticketBind(string $push_url, string $compensate_url, string $shop_id, string $provider = 'STANDARD', string $version = '1.0.0')
+    {
+        $method = 'youzan.ebiz.external.ticket.bind';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, [
+            'kdtId' => $shop_id,
+            'provider' => 'STANDARD',
+            'pushTicketUrl' => $push_url,
+            'getTicketUrl' => $compensate_url
+        ]);
+        $response = $this->request($request);
+        return $response;
+    }
+
     protected function buildUrl(string $method, string $version, array $query = []) {
         $query = array_merge(['access_token' => $this->accessToken], $query);
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
