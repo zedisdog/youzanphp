@@ -677,7 +677,14 @@ class Client extends BaseClient
         return $response;
     }
 
-    protected function buildUrl(string $method, string $version, array $query = []) {
+    /**
+     * make request url with api method and version and some query if needed
+     * @param string $method
+     * @param string $version
+     * @param array $query
+     * @return string
+     */
+    public function buildUrl(string $method, string $version, array $query = []) {
         $query = array_merge(['access_token' => $this->accessToken], $query);
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
     }
