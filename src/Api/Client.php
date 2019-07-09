@@ -673,7 +673,7 @@ class Client extends BaseClient
         $url = $this->buildUrl($method, $version);
         $request = $this->makeRequest($url, [
             'kdtId' => $shop_id,
-            'provider' => 'STANDARD',
+            'provider' => $provider,
             'pushTicketUrl' => $push_url,
             'getTicketUrl' => $compensate_url
         ]);
@@ -693,6 +693,12 @@ class Client extends BaseClient
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
     }
 
+    /**
+     * @param string $url
+     * @param array|null $params
+     * @param string $method
+     * @return Request
+     */
     protected function makeRequest(string $url, ?array $params = null, string $method = 'POST'): Request
     {
         if (is_array($params)) {
