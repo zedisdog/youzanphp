@@ -659,24 +659,19 @@ class Client extends BaseClient
     }
 
     /**
-     * @param string $push_url
-     * @param string $compensate_url
-     * @param string $shop_id
+     * @param string $push_ticket_url
+     * @param string $get_ticket_url
      * @param string $provider
      * @param string $version
      * @return array|bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function ticketBind(string $push_url, string $compensate_url, string $shop_id, string $provider = 'STANDARD', string $version = '1.0.0')
+    public function ticketBind(string $push_ticket_url, string $get_ticket_url, string $provider = 'STANDARD', string $version = '1.0.0')
     {
         $method = 'youzan.ebiz.external.ticket.bind';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'kdtId' => $shop_id,
-            'provider' => 'STANDARD',
-            'pushTicketUrl' => $push_url,
-            'getTicketUrl' => $compensate_url
-        ]);
+        $params = compact('push_ticket_url', 'get_ticket_url', 'provider');
+        $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
         return $response;
     }
@@ -693,6 +688,12 @@ class Client extends BaseClient
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
     }
 
+    /**
+     * @param string $url
+     * @param array|null $params
+     * @param string $method
+     * @return Request
+     */
     protected function makeRequest(string $url, ?array $params = null, string $method = 'POST'): Request
     {
         if (is_array($params)) {
