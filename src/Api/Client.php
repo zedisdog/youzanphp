@@ -630,7 +630,11 @@ class Client extends BaseClient
     {
         $method = 'youzan.ebiz.external.ticket.create';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, compact('tickets', 'orderNo', 'singleNum'));
+        $request = $this->makeRequest($url, [
+            'tickets' => $tickets,
+            'order_no' => $orderNo,
+            'single_num' => $singleNum
+        ]);
         $response = $this->request($request);
         return $response;
     }
@@ -684,6 +688,12 @@ class Client extends BaseClient
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
     }
 
+    /**
+     * @param string $url
+     * @param array|null $params
+     * @param string $method
+     * @return Request
+     */
     protected function makeRequest(string $url, ?array $params = null, string $method = 'POST'): Request
     {
         if (is_array($params)) {
