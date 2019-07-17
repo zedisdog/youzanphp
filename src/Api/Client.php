@@ -630,16 +630,70 @@ class Client extends BaseClient
     {
         $method = 'youzan.ebiz.external.ticket.create';
         $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, compact('tickets', 'orderNo', 'singleNum'));
+        $request = $this->makeRequest($url, [
+            'tickets' => $tickets,
+            'order_no' => $orderNo,
+            'single_num' => $singleNum
+        ]);
         $response = $this->request($request);
         return $response;
     }
 
-    protected function buildUrl(string $method, string $version, array $query = []) {
+    /**
+     * 外部电子卡券核销
+     * @param array $params
+     * @param string $version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function ticketVerify(array $params, $version = '1.0.0'): ?bool
+    {
+        if (empty($params['tickets']) || empty($params['orderNo'])) {
+            throw new \LogicException('fields [tickets],[orderNo] are required');
+        }
+        $method = 'youzan.ebiz.external.ticket.verify';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, $params);
+        $response = $this->request($request);
+        return $response;
+    }
+
+    /**
+     * @param string $push_ticket_url
+     * @param string $get_ticket_url
+     * @param string $provider
+     * @param string $version
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function ticketBind(string $push_ticket_url, string $get_ticket_url, string $provider = 'STANDARD', string $version = '1.0.0')
+    {
+        $method = 'youzan.ebiz.external.ticket.bind';
+        $url = $this->buildUrl($method, $version);
+        $params = compact('push_ticket_url', 'get_ticket_url', 'provider');
+        $request = $this->makeRequest($url, $params);
+        $response = $this->request($request);
+        return $response;
+    }
+
+    /**
+     * make request url with api method and version and some query if needed
+     * @param string $method
+     * @param string $version
+     * @param array $query
+     * @return string
+     */
+    public function buildUrl(string $method, string $version, array $query = []) {
         $query = array_merge(['access_token' => $this->accessToken], $query);
         return sprintf(self::URL.'%s/%s?%s', $method, $version, http_build_query($query));
     }
 
+    /**
+     * @param string $url
+     * @param array|null $params
+     * @param string $method
+     * @return Request
+     */
     protected function makeRequest(string $url, ?array $params = null, string $method = 'POST'): Request
     {
         if (is_array($params)) {
