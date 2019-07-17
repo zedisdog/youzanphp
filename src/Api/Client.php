@@ -90,7 +90,7 @@ class Client extends BaseClient
             $params['fans_id'] = 0;
         } else {
             $params['fans_id'] = $identification;
-            $params['mobile'] = '0';
+            $params['mobile'] = 0;
             $params['fans_type'] = 1;
         }
         $request = $this->makeRequest($url, $params);
