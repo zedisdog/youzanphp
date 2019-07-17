@@ -87,8 +87,10 @@ class Client extends BaseClient
         if (is_string($identification) && preg_match('/^1[3-9]\d{9}$/', $identification)) {
             $params['mobile'] = $identification;
             $params['fans_type'] = 0;
+            $params['fans_id'] = 0;
         } else {
             $params['fans_id'] = $identification;
+            $params['mobile'] = '';
             $params['fans_type'] = 1;
         }
         $request = $this->makeRequest($url, $params);
