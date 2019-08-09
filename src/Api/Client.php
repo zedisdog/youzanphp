@@ -162,6 +162,25 @@ class Client extends BaseClient
     }
 
     /**
+     * 添加分销员
+     * @param string $mobile
+     * @param string $version
+     * @return bool|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function addSalesmanAccount(string $mobile,string $version = '3.0.0'){
+        $method = 'youzan.salesman.account.add';
+        $url = $this->buildUrl($method,$version);
+        $param = [
+            'mobile'=>$mobile,
+            'fans_type'=>0,
+            'fans_id'=>0
+        ];
+        $request = $this->makeRequest($url,$param);
+        $response = $this->request($request);
+        return is_bool($response)?$response:null;
+    }
+    /**
      * 根据手机号码获取openId
      * @param string $mobile
      * @param string $countryCode
