@@ -80,9 +80,7 @@ abstract class BaseClient
             }
             $this->logger->warning(sprintf('response is empty, url: %s, body: %s', $request->getUri(), $request->getBody()));
         } elseif (isset($data['gw_err_resp'])) {
-            if (!$this->dontReportAll) {
-                $this->throwGatewayExceptions($data);
-            }
+            $this->throwGatewayExceptions($data);
             $this->logger->warning(sprintf('response has global errors: [url: %s, body: %s, code: %d, message: %s]', $request->getUri(), $request->getBody(), $error['err_code'], $error['err_msg']));
         } elseif ((isset($data['code']) && $data['code'] != 200) || (isset($data['success']) && $data['success'] != true)) {
             if (!$this->dontReportAll) {
@@ -119,37 +117,41 @@ abstract class BaseClient
             case 4201:
             case 4202:
             case 4203:
-                throw new TokenException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new TokenException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4001:
-                throw new InvalidUrlException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new InvalidUrlException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4004:
-                throw new InvalidContentException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new InvalidContentException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4005:
-                throw new InvalidApiException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new InvalidApiException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4006:
-                throw new InvalidModeException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new InvalidModeException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4007:
-                throw new InvalidRequestException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new InvalidRequestException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4101:
-                throw new MoreRequestException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new MoreRequestException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 4204:
-                throw new ForbidException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new ForbidException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 5001:
-                throw new ServerErrorException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new ServerErrorException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             case 5002:
-                throw new BusinessErrorException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new BusinessErrorException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
                 break;
             default:
-                throw new \RuntimeException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+                $e = new \RuntimeException(strval($error['gw_err_resp']['err_msg']), intval($error['gw_err_resp']['err_code']));
+        }
+
+        if ($e instanceof TokenException || !$this->dontReportAll) {
+            throw $e;
         }
     }
 }
