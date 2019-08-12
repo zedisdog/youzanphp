@@ -84,7 +84,7 @@ class Client extends BaseClient
     {
         $method = 'youzan.salesman.account.get';
         $url = $this->buildUrl($method, $version);
-        if (is_string($identification) && preg_match('/^1[3-9]\d{9}$/', $identification)) {
+        if ($this->isMobile($identification)) {
             $params['mobile'] = $identification;
             $params['fans_type'] = 0;
             $params['fans_id'] = 0;
@@ -96,6 +96,50 @@ class Client extends BaseClient
         $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
         return isset($response['user']) ? $response['user'] : $response;
+    }
+
+    protected function isMobile(string $str): bool
+    {
+        return is_string($str) && preg_match('/^1[3-9]\d{9}$/', $str);
+    }
+
+    /**
+     * 添加分销员
+     * @param string $identification 手机号或者fans_id
+     * @param int $fans_type
+     * @param string $from_mobile
+     * @param int $level
+     * @param int $group_id
+     * @param string $version
+     * @return bool|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function addSalesmanAccount(
+        $identification,
+        int $fans_type = 0,
+        string $from_mobile = '',
+        int $level = 0,
+        int $group_id = 0,
+        string $version = '3.0.1'
+    ): bool {
+        $method = 'youzan.salesman.account.add';
+        $url = $this->buildUrl($method,$version);
+        $params = compact('fans_type', 'from_mobile', 'level', 'group_id');
+        foreach ($params as $key => $value) {
+            if (!$value) {
+                unset($params[$key]);
+            }
+        }
+        if ($this->isMobile($identification)) {
+            $params['mobile'] = $identification;
+            $params['fans_id'] = 0;
+        } else {
+            $params['fans_id'] = $identification;
+            $params['mobile'] = '0';
+        }
+        $request = $this->makeRequest($url,$params);
+        $response = $this->request($request);
+        return $response?$response['isSuccess']:false;
     }
 
     /**
@@ -159,26 +203,6 @@ class Client extends BaseClient
         $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
         return is_bool($response) ? $response : null;
-    }
-
-    /**
-     * 添加分销员
-     * @param string $mobile
-     * @param string $version
-     * @return bool|null
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function addSalesmanAccount(string $mobile,string $version = '3.0.0'){
-        $method = 'youzan.salesman.account.add';
-        $url = $this->buildUrl($method,$version);
-        $param = [
-            'mobile'=>$mobile,
-            'fans_type'=>0,
-            'fans_id'=>0
-        ];
-        $request = $this->makeRequest($url,$param);
-        $response = $this->request($request);
-        return is_bool($response)?$response:null;
     }
     /**
      * 根据手机号码获取openId
@@ -491,7 +515,6 @@ class Client extends BaseClient
         $response = $this->request($request);
         return $response;
     }
-    // 已迁移的用户使用新的sdk
 
     /**
      * 发放优惠券/码
