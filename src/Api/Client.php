@@ -126,7 +126,7 @@ class Client extends BaseClient
         $url = $this->buildUrl($method,$version);
         $params = compact('fans_type', 'from_mobile', 'level', 'group_id');
         foreach ($params as $key => $value) {
-            if (!$value) {
+            if (!$value && $key != 'fans_type') {
                 unset($params[$key]);
             }
         }
