@@ -719,6 +719,7 @@ class Client extends BaseClient
     }
 
     /**
+     * 删除商品
      * @param $item_id
      * @param string $yz_open_id
      * @param string $version
@@ -737,7 +738,7 @@ class Client extends BaseClient
         }
         $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
-        return $response['is_success'];
+        return boolval($response['is_success']);
     }
 
     /**
