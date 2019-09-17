@@ -719,6 +719,28 @@ class Client extends BaseClient
     }
 
     /**
+     * @param $item_id
+     * @param string $yz_open_id
+     * @param string $version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function itemDelete($item_id, string $yz_open_id = '', $version = '3.0.1'): bool
+    {
+        $method = 'youzan.item.delete';
+        $url = $this->buildUrl($method, $version);
+        $params = [
+            'item_id' => intval($item_id)
+        ];
+        if ($yz_open_id) {
+            $params['yz_open_id'] = $yz_open_id;
+        }
+        $request = $this->makeRequest($url, $params);
+        $response = $this->request($request);
+        return $response['is_success'];
+    }
+
+    /**
      * make request url with api method and version and some query if needed
      * @param string $method
      * @param string $version
