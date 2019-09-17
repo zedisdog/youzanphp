@@ -12,7 +12,7 @@
     "require": {
         "php": ">=7.2",
         "guzzlehttp/guzzle": "^6.3",
-        "monolog/monolog": "^1.24",
+        "monolog/monolog": "^2.0",
         "pragmarx/ia-arr": "^5.8",
         "nesbot/carbon": "^2.0.0",
         "jawira/case-converter": "^2.0",
