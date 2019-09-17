@@ -611,6 +611,40 @@ class Client extends BaseClient
     }
 
     /**
+     * 创建商品
+     * @param array $params
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @link https://doc.youzanyun.com/doc#/content/API/1-299/detail/api/0/521 参数说明
+     */
+    public function itemCreate(array $params, string $version = '3.0.1'): ?array
+    {
+        $method = 'youzan.item.create';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, $params);
+        $response = $this->request($request);
+        return $response['item'] ?? null;
+    }
+
+    /**
+     * 更新商品
+     * @param array $params
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @link https://doc.youzanyun.com/doc#/content/API/1-299/detail/api/0/517 参数说明
+     */
+    public function itemUpdate(array $params, string $version = '3.0.1'): bool
+    {
+        $method = 'youzan.item.update';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, $params);
+        $response = $this->request($request);
+        return $response['is_success'] ?? false;
+    }
+
+    /**
      * 通过 open_id 或者 fans_id 获取用户信息
      * @param integer|string $id fans_id或者open_id
      * @param string $version
@@ -738,7 +772,7 @@ class Client extends BaseClient
         }
         $request = $this->makeRequest($url, $params);
         $response = $this->request($request);
-        return boolval($response['is_success']);
+        return $response['is_success'] ?? false;
     }
 
     /**
