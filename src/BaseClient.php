@@ -44,7 +44,8 @@ abstract class BaseClient
         $this->client = new Client([
             'headers' => [
                 'Content-Type' => 'application/json'
-            ]
+            ],
+            'verify' => false
         ]);
         if ($logger) {
             $this->logger = $logger;
