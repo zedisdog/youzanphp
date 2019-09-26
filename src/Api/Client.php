@@ -776,6 +776,53 @@ class Client extends BaseClient
     }
 
     /**
+     * 上传图片
+     * @param string $filename
+     * @param string $version
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function uploadImage(string $filename, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.materials.storage.platform.img.upload';
+        $url = $this->buildUrl($method, $version);
+
+        $request = new Request('POST', $url, [
+            'multipart' => [
+                [
+                    'name' => 'image',
+                    'contents' => fopen($filename, 'r')
+                ]
+            ]
+        ]);
+
+        $response = $this->request($request);
+        return $response;
+    }
+
+    /**
+     * 获取分组
+     * @param bool $isSort
+     * @param string $version
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getTags(bool $isSort = false, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.itemcategories.tags.get';
+        $url = $this->buildUrl($method, $version);
+        $param = [
+            'is_sort' => $isSort
+        ];
+
+        $request = $this->makeRequest($url, $param);
+
+        $response = $this->request($request);
+
+        return $response ? $response['tags'] : null;
+    }
+
+    /**
      * make request url with api method and version and some query if needed
      * @param string $method
      * @param string $version
