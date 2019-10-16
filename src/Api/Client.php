@@ -848,6 +848,15 @@ class Client extends BaseClient
     {
         $method = 'youzan.logistics.online.update';
         $url = $this->buildUrl($method, $version);
+
+        $trade_express_modify = [];
+        foreach ($param as $key => $value) {
+            if ($key != 'tid' && $key != 'yz_open_id') {
+                $trade_express_modify[$key] = $value;
+            }
+        }
+        $param['trade_express_modify'] = $trade_express_modify;
+
         $request = $this->makeRequest($url, $param);
         $response = $this->request($request);
         return $response ? $response['isSuccess'] : null;
