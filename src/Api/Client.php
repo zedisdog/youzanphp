@@ -823,6 +823,37 @@ class Client extends BaseClient
     }
 
     /**
+     * 确认发货
+     * @param array $param
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function logisticsConfirm(array $param, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.logistics.online.confirm';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, $param);
+        $response = $this->request($request);
+        return $response ? $response : null;
+    }
+
+    /**
+     * @param array $param
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function logisticsUpdate(array $param, string $version = '3.0.1'): ?bool
+    {
+        $method = 'youzan.logistics.online.update';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, $param);
+        $response = $this->request($request);
+        return $response ? $response['isSuccess'] : null;
+    }
+
+    /**
      * make request url with api method and version and some query if needed
      * @param string $method
      * @param string $version
