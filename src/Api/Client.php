@@ -863,6 +863,53 @@ class Client extends BaseClient
     }
 
     /**
+     * 获取物流公司列表
+     * @param string $version
+     * @return |null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function expressGet(string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.logistics.express.get';
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url);
+        $response = $this->request($request);
+        return $response ? $response['allExpress'] : null;
+    }
+
+    /**
+     * 发货单查询
+     * @param string $tid
+     * @param array $options
+     * @param string $kdt_id
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function queryDcByOrderNo(string $tid, array $options = [], string $kdt_id = '', string $version = '1.0.0'): ?array
+    {
+        $method = 'youzan.trade.dc.query.querybyorderno';
+        $url = $this->buildUrl($method, $version);
+
+        $params = array_merge($options, [
+            'include_operation_log' => true,
+            'include_dist_order_and_detail' => true,
+            'include_dist_order' => true,
+            'include_item_delivery_status' => true,
+            'tid' => $tid
+        ]);
+        if ($kdt_id) {
+            $params['kdt_id'] = $kdt_id;
+        }
+
+        $request = $this->makeRequest($url, $params);
+        $response = $this->request($request);
+
+        return $response;
+
+    }
+
+    /**
      * make request url with api method and version and some query if needed
      * @param string $method
      * @param string $version
