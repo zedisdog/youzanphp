@@ -910,6 +910,27 @@ class Client extends BaseClient
     }
 
     /**
+     * 获取运费模板
+     * @param int $page_no
+     * @param int $page_size
+     * @param string $version
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function logisticsTemplateGet(int $page_no, int $page_size = 20, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.logistics.template.search';
+        $url = $this->buildUrl($method, $version);
+
+        $params = compact('page_no', 'page_size');
+
+        $request = $this->makeRequest($url, $params);
+        $response = $this->request($request);
+
+        return $response;
+    }
+
+    /**
      * make request url with api method and version and some query if needed
      * @param string $method
      * @param string $version
