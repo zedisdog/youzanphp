@@ -829,6 +829,20 @@ class Client extends BaseClient
     }
 
     /**
+     * 获取分销员订单信息
+     * @param array $params
+     * @param string $version
+     * @return mixed|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function salesmanTrades(array $params, $version = '3.0.1'): ?array
+    {
+        $method = 'youzan.salesman.trades.get';
+        $response = $this->getResponse($method, $version, $params);
+        return $response ? $response['list'] : null;
+    }
+
+    /**
      * @param string $method
      * @param string $version
      * @param array|null $params
