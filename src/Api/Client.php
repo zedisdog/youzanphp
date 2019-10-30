@@ -843,6 +843,20 @@ class Client extends BaseClient
     }
 
     /**
+     * 获取退款详情
+     * @param $refund_id
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getRefund($refund_id, $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.trade.refund.get';
+        $response = $this->getResponse($method, $version, compact('refund_id'));
+        return $response;
+    }
+
+    /**
      * @param string $method
      * @param string $version
      * @param array|null $params
