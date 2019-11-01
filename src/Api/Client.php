@@ -857,6 +857,79 @@ class Client extends BaseClient
     }
 
     /**
+     * 商家同意退款
+     * @param string $refund_id
+     * @param string $version
+     * @param string $api_version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function agreeRefund(string $refund_id, $version, string $api_version = '3.0.0'): bool
+    {
+        $method = 'youzan.trade.refund.agree';
+        $params = compact('refund_id', 'version');
+        $response = $this->getResponse($method, $api_version, $params);
+        return $response ? $response['success'] : false;
+    }
+
+    /**
+     * 商家拒绝退款
+     * @param string $remark
+     * @param string $refund_id
+     * @param $version
+     * @param string $api_version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function refuseRefund(string $remark, string $refund_id, $version, $api_version = '3.0.0'): bool
+    {
+        $method = 'youzan.trade.refund.refuse';
+        $params = compact('remark', 'refund_id', 'version');
+        $response = $this->getResponse($method, $api_version, $params);
+        return $response ? $response['success'] : false;
+    }
+
+    /**
+     * 商家拒绝退货
+     * @param string $remark
+     * @param string $refund_id
+     * @param string $version
+     * @param string $api_version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function returnGoodsRefuse(string $remark, string $refund_id, $version, string $api_version = '3.0.0'): bool
+    {
+        $method = 'youzan.trade.returngoods.refuse';
+        $params = compact('remark', 'refund_id', 'version');
+        $response = $this->getResponse($method, $api_version, $params);
+        return $response ?? false;
+    }
+
+    /**
+     * 商家同意退货
+     * @param string $refund_id
+     * @param string $version
+     * @param string $address
+     * @param string $post
+     * @param string $mobile
+     * @param string $name
+     * @param string $remark
+     * @param string $tel
+     * @param string $api_version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function returnGoodsAgree(string $refund_id, string $version, string $address, string $post, string $mobile, string $name, string $remark = '', string $tel = '', string $api_version = '3.0.0'): bool
+    {
+        $method = 'youzan.trade.returngoods.agree';
+        $params = compact('refund_id', 'version', 'address', 'post', 'mobile', 'name', 'remark', 'tel');
+        $params = array_filter($params);
+        $response = $this->getResponse($method, $api_version, $params);
+        return $response ?? false;
+    }
+
+    /**
      * @param string $method
      * @param string $version
      * @param array|null $params
