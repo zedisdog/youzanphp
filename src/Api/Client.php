@@ -920,7 +920,7 @@ class Client extends BaseClient
      * @return bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function returnGoodsAgree(string $refund_id, string $version, string $address, string $mobile, string $name, string $remark = '', string $tel = '', string $post = '', string $api_version = '3.0.0'): bool
+    public function returnGoodsAgree(string $refund_id, string $version, string $address, string $mobile, string $name, string $tel = '', string $remark = '', string $post = '', string $api_version = '3.0.0'): bool
     {
         $method = 'youzan.trade.returngoods.agree';
         $params = compact('refund_id', 'version', 'address', 'post', 'mobile', 'name', 'remark', 'tel');
