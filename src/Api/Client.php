@@ -44,32 +44,26 @@ class Client extends BaseClient
     public function getTrade(string $tid, string $version = '4.0.0'): ?array
     {
         $method = 'youzan.trade.get';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'tid' => $tid
-        ]);
-        $response = $this->request($request);
-        return $response;
+        $params = compact('tid');
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
-     * @param string $accountId 帐号ID
-     * @param int $accountType 帐号类型（与帐户ID配合使用: 2=粉丝(原fansId),3:手机号,4:三方帐号(原open_user_id);6:微信open_id）
+     * @param string $account_id 帐号ID
+     * @param int $account_type 帐号类型（与帐户ID配合使用: 2=粉丝(原fansId),3:手机号,4:三方帐号(原open_user_id);6:微信open_id）
      * @param int $points 积分值
      * @param string $reason 积分变动原因
-     * @param string $bizValue 用于幂等支持（幂等时效三个月, 超过三个月的相同值调用不保证幂等）
+     * @param string $biz_value 用于幂等支持（幂等时效三个月, 超过三个月的相同值调用不保证幂等）
      * @param string $version
      * @return bool|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function pointIncrease(string $accountId, int $accountType, int $points, string $reason, string $bizValue = '', string $version = '3.1.0'): ?bool
+    public function pointIncrease(string $account_id, int $account_type, int $points, string $reason, string $biz_value = '', string $version = '3.1.0'): ?bool
     {
         $method = 'youzan.crm.customer.points.increase';
-        $url = $this->buildUrl($method, $version);
-        $params = $this->convert(compact('accountId', 'accountType', 'points', 'reason', 'bizValue'));
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
+        $params = compact('account_id', 'account_type', 'points', 'reason', 'biz_value');
+        $response = $this->getResponse($method, $version, $params);
         return $response ? $this->toBoolean($response['is_success']) : null;
     }
 
@@ -83,7 +77,6 @@ class Client extends BaseClient
     public function getSalesman($identification, string $version = '3.0.1'): ?array
     {
         $method = 'youzan.salesman.account.get';
-        $url = $this->buildUrl($method, $version);
         if ($this->isMobile($identification)) {
             $params['mobile'] = $identification;
             $params['fans_type'] = 0;
@@ -93,8 +86,7 @@ class Client extends BaseClient
             $params['mobile'] = 0;
             $params['fans_type'] = 1;
         }
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
+        $response = $this->getResponse($method, $version, $params);
         return isset($response['user']) ? $response['user'] : $response;
     }
 
@@ -123,7 +115,6 @@ class Client extends BaseClient
         string $version = '3.0.1'
     ): bool {
         $method = 'youzan.salesman.account.add';
-        $url = $this->buildUrl($method,$version);
         $params = compact('fans_type', 'from_mobile', 'level', 'group_id');
         foreach ($params as $key => $value) {
             if (!$value && $key != 'fans_type') {
@@ -137,26 +128,22 @@ class Client extends BaseClient
             $params['fans_id'] = $identification;
             $params['mobile'] = '0';
         }
-        $request = $this->makeRequest($url,$params);
-        $response = $this->request($request);
+        $response = $this->getResponse($method, $version, $params);
         return $response?$response['isSuccess']:false;
     }
 
     /**
      * 根据交易号获取分销员手机号
-     * @param string $tradeId 订单号
+     * @param string $order_no 订单号
      * @param string $version
      * @return string|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPhoneByTrade(string $tradeId, string $version = '3.0.0'): ?string
+    public function getPhoneByTrade(string $order_no, string $version = '3.0.0'): ?string
     {
         $method = 'youzan.salesman.trades.account.get';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'order_no' => $tradeId
-        ]);
-        $response = $this->request($request);
+        $params = compact('order_no');
+        $response = $this->getResponse($method, $version, $params);
         return $response ? $response['mobile'] : null;
     }
 
@@ -171,7 +158,6 @@ class Client extends BaseClient
     public function addTags(int $id, string $tags, $version = '3.0.0'): ?array
     {
         $method = 'youzan.users.weixin.follower.tags.add';
-        $url = $this->buildUrl($method, $version);
         $params = [
             'tags' => $tags
         ];
@@ -180,48 +166,40 @@ class Client extends BaseClient
         } else {
             $params['fans_id'] = $id;
         }
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
+        $response = $this->getResponse($method, $version, $params);
         return $response ? $response['user'] : null;
     }
 
     /**
      * 向客户添加tag
-     * @param string $accountType 帐号类型。目前支持以下选项（只支持传一种）： FansID：自有粉丝ID， Mobile：手机号， YouZanAccount：有赞账号，OpenUserId：三方自身账号， WeiXinOpenId：微信openId
-     * @param string $accountId 账户ID
+     * @param string $account_type 帐号类型。目前支持以下选项（只支持传一种）： FansID：自有粉丝ID， Mobile：手机号， YouZanAccount：有赞账号，OpenUserId：三方自身账号， WeiXinOpenId：微信openId
+     * @param string $account_id 账户ID
      * @param array $tags 标签集合
      * @param string $version
      * @return bool|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function addCostumerTags(string $accountType, string $accountId, array $tags, string $version = '4.0.0'): ?bool
+    public function addCostumerTags(string $account_type, string $account_id, array $tags, string $version = '4.0.0'): ?bool
     {
         $method = 'youzan.scrm.tag.relation.add';
-        $url = $this->buildUrl($method, $version);
-        $params = $this->convert(compact('accountType', 'accountId', 'tags'));
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
+        $params = compact('account_type', 'account_id', 'tags');
+        $response = $this->getResponse($method, $version, $params);
         return is_bool($response) ? $response : null;
     }
     /**
      * 根据手机号码获取openId
      * @param string $mobile
-     * @param string $countryCode
+     * @param string $country_code
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getOpenIdByPhone(string $mobile, string $countryCode = '+86', string $version = '3.0.0'): ?array
+    public function getOpenIdByPhone(string $mobile, string $country_code = '+86', string $version = '3.0.0'): ?array
     {
         $method = 'youzan.user.weixin.openid.get';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'mobile' => $mobile,
-            'country_code' => $countryCode
-        ]);
-        $response = $this->request($request);
-        return $response;
+        $params = compact('mobile', 'country_code');
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
@@ -233,10 +211,7 @@ class Client extends BaseClient
     public function getShopInfo(string $version = '3.0.0'): ?array
     {
         $method = 'youzan.shop.get';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url);
-        $response = $this->request($request);
-        return $response;
+        return $this->getResponse($method, $version);
     }
 
     /**
@@ -248,133 +223,122 @@ class Client extends BaseClient
     public function getItemCategories(string $version = '3.0.0'): ?array
     {
         $method = 'youzan.itemcategories.get';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url);
-        $response = $this->request($request);
-        return $response;
+        return $this->getResponse($method, $version);
     }
 
     /**
      * 获取在销售的商品
-     * @param int $pageSize 每页条数，最大300个，不传或为0时默认设置为40
-     * @param int $pageNo 页码，不传或为0时默认设置为1
+     * @param int $page_size 每页条数，最大300个，不传或为0时默认设置为40
+     * @param int $page_no 页码，不传或为0时默认设置为1
      * @param string $q 搜索字段。搜索商品名
-     * @param int $tagId 商品分组ID,使用youzan.itemcategories.tags.get 查询商品分组接口获取id进行筛选
-     * @param Carbon|null $updateTimeStart 更新时间起始，Unix时间戳请求 时间单位:ms
-     * @param Carbon|null $updateTimeEnd 更新时间起始，Unix时间戳请求 时间单位:ms
-     * @param string $orderBy 排序方式。格式为column:asc/desc，目前排序字段：1—创建时间：created_time，2—更新时间：update_time，3—价格：price，4—销量：sold_num
+     * @param int $tag_id 商品分组ID,使用youzan.itemcategories.tags.get 查询商品分组接口获取id进行筛选
+     * @param Carbon|null $update_time_start 更新时间起始，Unix时间戳请求 时间单位:ms
+     * @param Carbon|null $update_time_end 更新时间起始，Unix时间戳请求 时间单位:ms
+     * @param string $order_by 排序方式。格式为column:asc/desc，目前排序字段：1—创建时间：created_time，2—更新时间：update_time，3—价格：price，4—销量：sold_num
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
     public function getOnSaleItems(
-        int $pageNo = 1,
-        int $pageSize = 40,
+        int $page_no = 1,
+        int $page_size = 40,
         string $q = '',
-        int $tagId = 0,
-        ?Carbon $updateTimeStart = null,
-        ?Carbon $updateTimeEnd = null,
-        string $orderBy = 'created_time:desc',
+        int $tag_id = 0,
+        ?Carbon $update_time_start = null,
+        ?Carbon $update_time_end = null,
+        string $order_by = 'created_time:desc',
         string $version = '3.0.0'
     ): ?array {
         $method = 'youzan.items.onsale.get';
-        $url = $this->buildUrl($method, $version);
-        $updateTimeStart = ($updateTimeStart->timestamp * 1000) + intval(substr(strval($updateTimeStart->micro), 0, 3));
-        $updateTimeEnd = ($updateTimeEnd->timestamp * 1000) + intval(substr(strval($updateTimeEnd->micro), 0, 3));
-        $params = $this->convert(compact(
-            'pageNo',
-            'pageSize',
+        $update_time_start = ($update_time_start->timestamp * 1000) + intval(substr(strval($update_time_start->micro), 0, 3));
+        $update_time_end = ($update_time_end->timestamp * 1000) + intval(substr(strval($update_time_end->micro), 0, 3));
+        $params = compact(
+            'page_no',
+            'page_size',
             'q',
-            'tagId',
-            'updateTimeStart',
-            'updateTimeEnd',
-            'orderBy'));
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
-        return $response;
+            'tag_id',
+            'update_time_start',
+            'update_time_end',
+            'order_by'
+        );
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
      * 获取仓库中的商品
-     * @param int $pageSize 每页条数，最大支持300
-     * @param int $pageNo 页码
+     * @param int $page_size 每页条数，最大支持300
+     * @param int $page_no 页码
      * @param string $banner 分类字段。可选值：for_shelved（已下架的）/ sold_out（已售罄的）
      * @param string $q 搜索字段。搜索商品的title
-     * @param int $tagId 商品标签的ID
-     * @param Carbon|null $updateTimeStart 更新时间起始，时间单位ms
-     * @param Carbon|null $updateTimeEnd 更新时间止，时间单位ms
-     * @param string $orderBy 排序方式。格式为column:asc/desc，目前排序字段：1.创建时间：created_time，2.更新时间：update_time，3.价格：price，4.销量：sold_num
+     * @param int $tag_id 商品标签的ID
+     * @param Carbon|null $update_time_start 更新时间起始，时间单位ms
+     * @param Carbon|null $update_time_end 更新时间止，时间单位ms
+     * @param string $order_by 排序方式。格式为column:asc/desc，目前排序字段：1.创建时间：created_time，2.更新时间：update_time，3.价格：price，4.销量：sold_num
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
     public function getInventoryItems(
-        int $pageNo = 1,
-        int $pageSize = 40,
+        int $page_no = 1,
+        int $page_size = 40,
         string $banner = '',
         string $q = '',
-        int $tagId = 0,
-        ?Carbon $updateTimeStart = null,
-        ?Carbon $updateTimeEnd = null,
-        string $orderBy = 'created_time:desc',
+        int $tag_id = 0,
+        ?Carbon $update_time_start = null,
+        ?Carbon $update_time_end = null,
+        string $order_by = 'created_time:desc',
         string $version = '3.0.0'
     ): ?array {
         $method = 'youzan.items.inventory.get';
-        $url = $this->buildUrl($method, $version);
-        $updateTimeStart = ($updateTimeStart->timestamp * 1000) + intval(substr(strval($updateTimeStart->micro), 0, 3));
-        $updateTimeEnd = ($updateTimeEnd->timestamp * 1000) + intval(substr(strval($updateTimeEnd->micro), 0, 3));
-        $params = $this->convert(compact(
-            'pageNo',
-            'pageSize',
+        $update_time_start = ($update_time_start->timestamp * 1000) + intval(substr(strval($update_time_start->micro), 0, 3));
+        $update_time_end = ($update_time_end->timestamp * 1000) + intval(substr(strval($update_time_end->micro), 0, 3));
+        $params = compact(
+            'page_no',
+            'page_size',
             'banner',
             'q',
-            'tagId',
-            'updateTimeStart',
-            'updateTimeEnd',
-            'orderBy'
-        ));
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
-        return $response;
+            'tag_id',
+            'update_time_start',
+            'update_time_end',
+            'order_by'
+        );
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
      * 获取所有商品，包括上架的和仓库中的
-     * @param int $pageSize 每页数量，要求小于200，要求page_size与page_no乘积小于4000
-     * @param int $pageNo 页，要求小于20，要求page_size与page_no乘积小于4000
-     * @param string $itemIds 作为查询条件的商品ID列表，以逗号分隔，如:457692126,457455556
-     * @param int $showSoldOut 是否在售: 0—在售 1—售罄或部分售罄 2—全部
+     * @param int $page_size 每页数量，要求小于200，要求page_size与page_no乘积小于4000
+     * @param int $page_no 页，要求小于20，要求page_size与page_no乘积小于4000
+     * @param string $item_ids 作为查询条件的商品ID列表，以逗号分隔，如:457692126,457455556
+     * @param int $show_sold_out 是否在售: 0—在售 1—售罄或部分售罄 2—全部
      * @param string $q 搜索字段。支持搜索：商品名
-     * @param string $tagIds 作为查询的分组ID列表，以逗号分隔，如:106590390,106590393
+     * @param string $tag_ids 作为查询的分组ID列表，以逗号分隔，如:106590390,106590393
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
     public function getProducts(
-        int $pageNo = 1,
-        int $pageSize = 40,
-        string $itemIds = '',
-        int $showSoldOut = 2,
+        int $page_no = 1,
+        int $page_size = 40,
+        string $item_ids = '',
+        int $show_sold_out = 2,
         string $q = '',
-        string $tagIds = '',
+        string $tag_ids = '',
         string $version = '3.0.0'
     ): ?array {
         $method = 'youzan.item.search';
-        $url = $this->buildUrl($method, $version);
-        $params = $this->convert(compact(
-            'pageNo',
-            'pageSize',
-            'itemIds',
-            'showSoldOut',
+        $params = compact(
+            'page_no',
+            'page_size',
+            'item_ids',
+            'show_sold_out',
             'q',
-            'tagIds'
-        ));
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
-        return $response;
+            'tag_ids'
+        );
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
@@ -428,40 +392,34 @@ class Client extends BaseClient
     public function getShopBaseInfo(string $version = '3.0.0'): ?array
     {
         $method = 'youzan.shop.basic.get';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url);
-        $response = $this->request($request);
-        return $response;
+        return $this->getResponse($method, $version);
     }
 
     /**
      * 向用户发送赠品
-     * @param int $activityId 赠品活动ID
-     * @param int $fansId 微信粉丝ID，fans_id和buyer_id至少要传一个
-     * @param int $buyerId 有赞手机注册用户ID，fans_id和buyer_id至少要传一个
+     * @param int $activity_id 赠品活动ID
+     * @param int $fans_id 微信粉丝ID，fans_id和buyer_id至少要传一个
+     * @param int $buyer_id 有赞手机注册用户ID，fans_id和buyer_id至少要传一个
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function givePresent(int $activityId, int $fansId, int $buyerId = 0, string $version = '3.0.0'): ?array
+    public function givePresent(int $activity_id, int $fans_id, int $buyer_id = 0, string $version = '3.0.0'): ?array
     {
         $method = 'youzan.ump.present.give';
-        $url = $this->buildUrl($method, $version);
-        $params = $this->convert(compact(
-            'activityId',
-            'fansId',
-            'buyerId'
-        ));
+        $params = compact(
+            'activity_id',
+            'fans_id',
+            'buyer_id'
+        );
 //        if (!$params['fans_id']) {
 //            unset($params['fans_id']);
 //        }
 //        if (!$params['buyer_id']) {
 //            unset($params['buyer_id']);
 //        }
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
-        return $response;
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
@@ -473,11 +431,10 @@ class Client extends BaseClient
      */
     public function getPresents(array $fields = [], string $version = '3.0.0'): ?array {
         $method = 'youzan.ump.presents.ongoing.all';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
+        $params = [
             'fields' => implode(',', $fields)
-        ]);
-        $response = $this->request($request);
+        ];
+        $response = $this->getResponse($method, $version, $params);
         return $response ? $response['presents'] : null;
     }
 
@@ -490,12 +447,8 @@ class Client extends BaseClient
      */
     public function getUnfinishedCoupons(string $fields = '', string $version = '3.0.0'): ?array {
         $method = 'youzan.ump.coupons.unfinished.search';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'fields' => $fields
-        ]);
-        $response = $this->request($request);
-        return $response;
+        $params = compact('fields');
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
@@ -508,80 +461,65 @@ class Client extends BaseClient
     public function getCoupon(int $id, string $version='3.0.0'): ?array
     {
         $method = 'youzan.ump.coupon.detail.get';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'id' => $id
-        ]);
-        $response = $this->request($request);
-        return $response;
+        $params = compact('id');
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
      * 发放优惠券/码
-     * @param int $couponGroupId 优惠券/码活动ID
+     * @param int $coupon_group_id 优惠券/码活动ID
      * @param string $identify
      * @param string $type mobile，weixin_openid，fans_id，open_user_id
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function takeCoupon(int $couponGroupId, string $identify, string $type = 'fans_id', $version='3.0.0'): ?array
+    public function takeCoupon(int $coupon_group_id, string $identify, string $type = 'fans_id', $version='3.0.0'): ?array
     {
         $method = 'youzan.ump.coupon.take';
-        $url = $this->buildUrl($method, $version);
         $params = [
-            'coupon_group_id' => $couponGroupId,
+            'coupon_group_id' => $coupon_group_id,
             $type => $identify
         ];
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
-        return $response;
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
      * （分页查询）查询优惠券（码）活动列表
-     * @param string $groupType
+     * @param string $group_type
      * @param string $status
-     * @param int $pageNo
-     * @param int $pageSize
+     * @param int $page_no
+     * @param int $page_size
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Jawira\CaseConverter\CaseConverterException
      */
-    public function getCouponList(string $groupType, string $status, int $pageNo = 1, int $pageSize = 1000, string $version = '3.0.0'): ?array
+    public function getCouponList(string $group_type, string $status, int $page_no = 1, int $page_size = 1000, string $version = '3.0.0'): ?array
     {
         $method = 'youzan.ump.coupon.search';
-        $url = $this->buildUrl($method, $version);
-        $params = $this->convert(compact(
-            'groupType',
+        $params = compact(
+            'group_type',
             'status',
-            'pageNo',
-            'pageSize'
-        ));
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
-        return $response;
+            'page_no',
+            'page_size'
+        );
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
      * 获取分销员列表
-     * @param int $pageNo
-     * @param int $pageSize
+     * @param int $page_no
+     * @param int $page_size
      * @param string $version
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getSalesmanList($pageNo = 1, $pageSize = 100, $version = '3.0.0'): ?array
+    public function getSalesmanList($page_no = 1, $page_size = 100, $version = '3.0.0'): ?array
     {
         $method = 'youzan.salesman.accounts.get';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'page_no' => $pageNo,
-            'page_size' => $pageSize
-        ]);
-        $response = $this->request($request);
-        return $response;
+        $params = compact('page_no', 'page_size');
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
@@ -595,7 +533,6 @@ class Client extends BaseClient
     public function itemGet($identification, $alias = false, string $version = '3.0.0'): ?array
     {
         $method = 'youzan.item.get';
-        $url = $this->buildUrl($method, $version);
         if ($alias) {
             $params = [
                 'alias' => $identification
@@ -605,9 +542,38 @@ class Client extends BaseClient
                 'item_id' => $identification
             ];
         }
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
+        $response = $this->getResponse($method, $version, $params);
         return $response ? $response['item'] : null;
+    }
+
+    /**
+     * 创建商品
+     * @param array $params
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @link https://doc.youzanyun.com/doc#/content/API/1-299/detail/api/0/521 参数说明
+     */
+    public function itemCreate(array $params, string $version = '3.0.1'): ?array
+    {
+        $method = 'youzan.item.create';
+        $response = $this->getResponse($method, $version, $params);
+        return $response['item'] ?? null;
+    }
+
+    /**
+     * 更新商品
+     * @param array $params
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @link https://doc.youzanyun.com/doc#/content/API/1-299/detail/api/0/517 参数说明
+     */
+    public function itemUpdate(array $params, string $version = '3.0.1'): bool
+    {
+        $method = 'youzan.item.update';
+        $response = $this->getResponse($method, $version, $params);
+        return $response['is_success'] ?? false;
     }
 
     /**
@@ -620,65 +586,45 @@ class Client extends BaseClient
     public function getFollower($id, string $version='3.0.0'): ?array
     {
         $method = 'youzan.users.weixin.follower.get';
-
-        $url = $this->buildUrl($method, $version);
-
         if (is_string($id) && preg_match('/[a-zA-Z]/',$id)) {
             $params['weixin_openid'] = $id;
         } else {
             $params['fans_id'] = $id;
         }
-
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
+        $response = $this->getResponse($method, $version, $params);
         return $response ? $response['user'] : null;
     }
 
     /**
      * @param string $desc
      * @param string $oid
-     * @param int $refundFee
+     * @param int $refund_fee
      * @param string $tid
      * @param string $version
      * @return array|bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function refund(string $desc, string $oid, int $refundFee, string $tid, string $version = '3.0.0'): ?array
+    public function refund(string $desc, string $oid, int $refund_fee, string $tid, string $version = '3.0.0'): ?array
     {
         $method = 'youzan.trade.refund.seller.active';
-
-        $url = $this->buildUrl($method, $version);
-
-        $request = $this->makeRequest($url, [
-            'refund_fee' => $refundFee,
-            'oid' => $oid,
-            'tid' => $tid,
-            'desc' => $desc
-        ]);
-        $response = $this->request($request);
-        return $response;
+        $params = compact('refund_fee', 'oid', 'tid', 'desc');
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
      * 外部电子卡券创建核销码
      * @param string $tickets
-     * @param string $orderNo
-     * @param int $singleNum
+     * @param string $order_no
+     * @param int $single_num
      * @param string $version
      * @return bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function ticketCreate(string $tickets, string $orderNo, int $singleNum = 1, string $version = '1.0.0'): ?bool
+    public function ticketCreate(string $tickets, string $order_no, int $single_num = 1, string $version = '1.0.0'): ?bool
     {
         $method = 'youzan.ebiz.external.ticket.create';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, [
-            'tickets' => $tickets,
-            'order_no' => $orderNo,
-            'single_num' => $singleNum
-        ]);
-        $response = $this->request($request);
-        return $response;
+        $params = compact('tickets', 'order_no', 'single_num');
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
@@ -690,14 +636,11 @@ class Client extends BaseClient
      */
     public function ticketVerify(array $params, $version = '1.0.0'): ?bool
     {
-        if (empty($params['tickets']) || empty($params['orderNo'])) {
-            throw new \LogicException('fields [tickets],[orderNo] are required');
+        if (empty($params['tickets']) || empty($params['order_no'])) {
+            throw new \LogicException('fields [tickets],[order_no] are required');
         }
         $method = 'youzan.ebiz.external.ticket.verify';
-        $url = $this->buildUrl($method, $version);
-        $request = $this->makeRequest($url, $params);
-        $response = $this->request($request);
-        return $response;
+        return $this->getResponse($method, $version, $params);
     }
 
     /**
@@ -711,11 +654,293 @@ class Client extends BaseClient
     public function ticketBind(string $push_ticket_url, string $get_ticket_url, string $provider = 'STANDARD', string $version = '1.0.0')
     {
         $method = 'youzan.ebiz.external.ticket.bind';
-        $url = $this->buildUrl($method, $version);
         $params = compact('push_ticket_url', 'get_ticket_url', 'provider');
-        $request = $this->makeRequest($url, $params);
+        return $this->getResponse($method, $version, $params);
+    }
+
+    /**
+     * 删除商品
+     * @param $item_id
+     * @param string $yz_open_id
+     * @param string $version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function itemDelete($item_id, string $yz_open_id = '', $version = '3.0.1'): bool
+    {
+        $method = 'youzan.item.delete';
+        $params = [
+            'item_id' => intval($item_id)
+        ];
+        if ($yz_open_id) {
+            $params['yz_open_id'] = $yz_open_id;
+        }
+        $response = $this->getResponse($method, $version, $params);
+        return $response['is_success'] ?? false;
+    }
+
+    /**
+     * 上传图片
+     * @param string $filename
+     * @param string $version
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function uploadImage(string $filename, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.materials.storage.platform.img.upload';
+        $url = $this->buildUrl($method, $version);
+
+        $request = new Request('POST', $url, [
+            'multipart' => [
+                [
+                    'name' => 'image',
+                    'contents' => fopen($filename, 'r')
+                ]
+            ]
+        ]);
+
         $response = $this->request($request);
         return $response;
+    }
+
+    /**
+     * 获取分组
+     * @param bool $isSort
+     * @param string $version
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getTags(bool $isSort = false, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.itemcategories.tags.get';
+        $param = [
+            'is_sort' => $isSort
+        ];
+        $response = $this->getResponse($method, $version, $param);
+        return $response ? $response['tags'] : null;
+    }
+
+    /**
+     * 确认发货
+     * @param array $param
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function logisticsConfirm(array $param, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.logistics.online.confirm';
+        $response = $this->getResponse($method, $version, $param);
+        return $response ? $response : null;
+    }
+
+    /**
+     * 物流信息更新
+     * @param array $param
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function logisticsUpdate(array $param, string $version = '3.0.1'): ?bool
+    {
+        $method = 'youzan.logistics.online.update';
+        $trade_express_modify = [];
+        foreach ($param as $key => $value) {
+            if ($key != 'tid' && $key != 'yz_open_id') {
+                $trade_express_modify[$key] = $value;
+            }
+        }
+        $param['trade_express_modify'] = $trade_express_modify;
+        $response = $this->getResponse($method, $version, $param);
+        return $response ? $response['isSuccess'] : null;
+    }
+
+    /**
+     * 获取物流公司列表
+     * @param string $version
+     * @return |null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function expressGet(string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.logistics.express.get';
+        $response = $this->getResponse($method, $version);
+        return $response ? $response['allExpress'] : null;
+    }
+
+    /**
+     * 发货单查询
+     * @param string $tid
+     * @param array $options
+     * @param string $kdt_id
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function queryDcByOrderNo(string $tid, array $options = [], string $kdt_id = '', string $version = '1.0.0'): ?array
+    {
+        $method = 'youzan.trade.dc.query.querybyorderno';
+        $params = array_merge($options, [
+            'include_operation_log' => true,
+            'include_dist_order_and_detail' => true,
+            'include_dist_order' => true,
+            'include_item_delivery_status' => true,
+            'tid' => $tid
+        ]);
+        if ($kdt_id) {
+            $params['kdt_id'] = $kdt_id;
+        }
+        return $this->getResponse($method, $version, $params);
+    }
+
+    /**
+     * 获取运费模板
+     * @param int $page_no
+     * @param int $page_size
+     * @param string $version
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function logisticsTemplateGet(int $page_no, int $page_size = 20, string $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.logistics.template.search';
+        $params = compact('page_no', 'page_size');
+        return $this->getResponse($method, $version, $params);
+    }
+
+    /**
+     * 计算运费
+     * @param string $order_no
+     * @param string $province_name
+     * @param string $city_name
+     * @param string $county_name
+     * @param array $item_param_list
+     * @param string $version
+     * @return int
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function logisticsFee(string $order_no, string $province_name, string $city_name, string $county_name, array $item_param_list, string $version = '3.0.0'): int
+    {
+        $method = 'youzan.logistics.fee.get';
+        $params = compact('order_no', 'province_name', 'city_name', 'county_name', 'item_param_list');
+        $response = $this->getResponse($method, $version, $params);
+        return $response ? $response['totalPostage'] : 0;
+    }
+
+    /**
+     * 获取分销员订单信息
+     * @param array $params
+     * @param string $version
+     * @return mixed|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function salesmanTrades(array $params, $version = '3.0.1'): ?array
+    {
+        $method = 'youzan.salesman.trades.get';
+        $response = $this->getResponse($method, $version, $params);
+        return $response ? $response['list'] : null;
+    }
+
+    /**
+     * 获取退款详情
+     * @param $refund_id
+     * @param string $version
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getRefund($refund_id, $version = '3.0.0'): ?array
+    {
+        $method = 'youzan.trade.refund.get';
+        $response = $this->getResponse($method, $version, compact('refund_id'));
+        return $response;
+    }
+
+    /**
+     * 商家同意退款
+     * @param string $refund_id
+     * @param string $version
+     * @param string $api_version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function agreeRefund(string $refund_id, $version, string $api_version = '3.0.0'): bool
+    {
+        $method = 'youzan.trade.refund.agree';
+        $params = compact('refund_id', 'version');
+        $response = $this->getResponse($method, $api_version, $params);
+        return $response ? $response['success'] : false;
+    }
+
+    /**
+     * 商家拒绝退款
+     * @param string $remark
+     * @param string $refund_id
+     * @param $version
+     * @param string $api_version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function refuseRefund(string $remark, string $refund_id, $version, $api_version = '3.0.0'): bool
+    {
+        $method = 'youzan.trade.refund.refuse';
+        $params = compact('remark', 'refund_id', 'version');
+        $response = $this->getResponse($method, $api_version, $params);
+        return $response ? $response['success'] : false;
+    }
+
+    /**
+     * 商家拒绝退货
+     * @param string $remark
+     * @param string $refund_id
+     * @param string $version
+     * @param string $api_version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function returnGoodsRefuse(string $remark, string $refund_id, $version, string $api_version = '3.0.0'): bool
+    {
+        $method = 'youzan.trade.returngoods.refuse';
+        $params = compact('remark', 'refund_id', 'version');
+        $response = $this->getResponse($method, $api_version, $params);
+        return $response ?? false;
+    }
+
+    /**
+     * 商家同意退货
+     * @param string $refund_id
+     * @param string $version
+     * @param string $address
+     * @param string $post
+     * @param string $mobile
+     * @param string $name
+     * @param string $remark
+     * @param string $tel
+     * @param string $api_version
+     * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function returnGoodsAgree(string $refund_id, string $version, string $address, string $mobile, string $name, string $tel = '', string $remark = '', string $post = '', string $api_version = '3.0.0'): bool
+    {
+        $method = 'youzan.trade.returngoods.agree';
+        $params = compact('refund_id', 'version', 'address', 'post', 'mobile', 'name', 'remark', 'tel');
+        $params = array_filter($params);
+        $response = $this->getResponse($method, $api_version, $params);
+        return $response ?? false;
+    }
+
+    /**
+     * @param string $method
+     * @param string $version
+     * @param array|null $params
+     * @return array|bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    protected function getResponse(string $method, string $version, ?array $params = null)
+    {
+        $url = $this->buildUrl($method, $version);
+        $request = $this->makeRequest($url, $params);
+        return $this->request($request);
     }
 
     /**
@@ -742,22 +967,6 @@ class Client extends BaseClient
             $params = \GuzzleHttp\json_encode($params);
         }
         return new Request($method, $url, [], $params);
-    }
-
-    /**
-     * @param array $data
-     * @return array
-     * @throws \Jawira\CaseConverter\CaseConverterException
-     */
-    protected function convert(array $data): array
-    {
-        $result = [];
-        foreach ($data as $key => $value) {
-            $convert = new Convert($key);
-            $result[$convert->toSnake()] = $value;
-        }
-
-        return $result;
     }
 
     /**
