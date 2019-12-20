@@ -636,8 +636,8 @@ class Client extends BaseClient
      */
     public function ticketVerify(array $params, $version = '1.0.0'): ?bool
     {
-        if (empty($params['tickets']) || empty($params['orderNo'])) {
-            throw new \LogicException('fields [tickets],[orderNo] are required');
+        if (empty($params['tickets']) || empty($params['order_no'])) {
+            throw new \LogicException('fields [tickets],[order_no] are required');
         }
         $method = 'youzan.ebiz.external.ticket.verify';
         return $this->getResponse($method, $version, $params);
