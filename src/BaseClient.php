@@ -99,7 +99,9 @@ abstract class BaseClient
 
         if ($error) {
             return null;
-        } elseif(!isset($data['data']) || isset($data['page_num'])) { // 当没有data字段，或者有分页等其他控制字段在外层时，原样返回
+        } elseif (isset($data['page_num'])) { // 有分页等其他控制字段在外层时，原样返回
+            return $data;
+        } elseif(!isset($data['data'])) { // 当没有data字段
             return $data['response'];
         } else {
             return $data['data'];
