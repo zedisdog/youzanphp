@@ -203,6 +203,21 @@ class Client extends BaseClient
     }
 
     /**
+     * 连锁
+     * 根据总部查询连锁下级组织，返回组织的id、名称、角色、经营模式
+     * @param int $page_num
+     * @param int $page_size
+     * @param string $version
+     * @return array|null
+     */
+    public function chainDescendentList($page_num = 1, $page_size = 15, string $version = '1.0.0'): ?array
+    {
+        $method = 'youzan.shop.chain.descendent.organization.list';
+        $params = compact('page_num', 'page_size');
+        return $this->getResponse($method, $version, $params);
+    }
+
+    /**
      * 获取店铺信息
      * @param string $version
      * @return array|null
