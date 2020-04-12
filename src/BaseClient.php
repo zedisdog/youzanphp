@@ -75,12 +75,8 @@ abstract class BaseClient
         $this->logger->info("-response " . $body);
         $data = \GuzzleHttp\json_decode($body, true);
         $error = true;
-        if (empty($data)) {
-            if (!$this->dontReportAll) {
-                throw new ResponseEmptyException("response is empty");
-            }
-            $this->logger->warning(sprintf('response is empty, url: %s, body: %s', $request->getUri(), $request->getBody()));
-        } elseif (isset($data['gw_err_resp'])) {
+
+        if (isset($data['gw_err_resp'])) {
             $this->throwGatewayExceptions($data);
             $this->logger->warning(sprintf('response has global errors: [url: %s, body: %s, code: %d, message: %s]', $request->getUri(), $request->getBody(), $error['err_code'], $error['err_msg']));
         } elseif ((isset($data['code']) && $data['code'] != 200) || (isset($data['success']) && $data['success'] != true)) {
