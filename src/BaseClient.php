@@ -99,10 +99,10 @@ abstract class BaseClient
 
         if ($error) {
             return null;
-        } elseif (isset($data['page_num'])) { // 有分页等其他控制字段在外层时，原样返回
-            return $data;
-        } elseif(!isset($data['data'])) { // 当没有data字段
+        } elseif(!isset($data['data']) && isset($data['response'])) { // 有些接口有response字段 没有data字段
             return $data['response'];
+        } elseif (isset($data['page_num']) || !isset($data['data'])) { // 有分页等其他控制字段在外层或者没有data字段时，原样返回
+            return $data;
         } else {
             return $data['data'];
         }
