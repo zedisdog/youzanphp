@@ -740,14 +740,13 @@ class Client extends BaseClient
      * 确认发货
      * @param array $param
      * @param string $version
-     * @return array|null
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return bool
      */
-    public function logisticsConfirm(array $param, string $version = '3.0.0'): ?array
+    public function logisticsConfirm(array $param, string $version = '3.0.0'): bool
     {
         $method = 'youzan.logistics.online.confirm';
         $response = $this->getResponse($method, $version, $param);
-        return $response ? $response : null;
+        return $response ? $response['is_success'] : false;
     }
 
     /**
